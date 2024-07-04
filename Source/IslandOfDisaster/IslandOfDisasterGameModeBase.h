@@ -16,4 +16,5 @@ class ISLANDOFDISASTER_API AIslandOfDisasterGameModeBase : public AGameModeBase
 	
 public:
 	AIslandOfDisasterGameModeBase();
+	virtual void BeginPlay() override;
 };

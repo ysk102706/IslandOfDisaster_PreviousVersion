@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../Item/Item.h"
 #include "CPP_Player.generated.h"
 
 UCLASS()
@@ -17,31 +18,31 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Input
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputMappingContext* IMC_Default;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_Move;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_Camera;
+	UPROPERTY(EditAnywhere, Category=Input)
+	class UInputAction* IA_Pick;
+
+	UPROPERTY(EditAnywhere, Category = Ray)
+	float RayLength;
 
 	UFUNCTION()
 	void Move(const FInputActionValue& Value);
 	UFUNCTION()
 	void Camera(const FInputActionValue& Value);
+	UFUNCTION()
+	void PickItem(const FInputActionValue& Value);
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category=UI)
-	TSubclassOf<class UPlayerInfoUI> PlayerInfoUI;
+	UFUNCTION()
+	void ItemCheckRayCast();
 
 private:
-	float CurHP;
-	float MaxHP;
+	TObjectPtr<class UCameraComponent> PlayerCamera;
 	
-	float CurHunger;
-	float MaxHunger;
+	TObjectPtr<AItem> SelectedItem;
 
-	float CurThirsty;
-	float MaxThirsty;
-
-	UUserWidget* PlayerInfoWidget;
 };
