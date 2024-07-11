@@ -14,4 +14,7 @@ class ISLANDOFDISASTER_API AIslandOfDisasterGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+	AIslandOfDisasterGameModeBase();
+	virtual void BeginPlay() override;
 };
