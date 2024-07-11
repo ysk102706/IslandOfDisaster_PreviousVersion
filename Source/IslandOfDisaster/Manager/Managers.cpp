@@ -15,7 +15,18 @@ UUIManager* UManagers::UI() {
 
 UManagers* UManagers::Get(const UWorld* World)
 {
+	auto a = UGameplayStatics::GetGameInstance(World);
 	return Cast<UManagers>(UGameplayStatics::GetGameInstance(World));
+}
+
+void UManagers::SetPlayer(ACPP_Player* Player)
+{
+	PlayerObject = Player;
+}
+
+ACPP_Player* UManagers::Player()
+{
+	return PlayerObject;
 }
 
 void UManagers::InitManager() {

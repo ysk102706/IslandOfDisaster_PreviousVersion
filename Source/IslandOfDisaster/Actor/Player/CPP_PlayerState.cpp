@@ -34,7 +34,6 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				DecreaseHunger(5);
 				DecreaseThirsty(5);
 
-				StateApplyToUI();
 				PhysiologicalPhenomenonUnit = 0;
 			}
 
@@ -42,8 +41,7 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				ChangeTemperature();
 				ChangeHumidity();
 				if (Hours <= 7 || Hours >= 20) DecreaseTemperature(Random(7, 10));
-				
-				StateApplyToUI();
+
 				TemperatureAndHumidityUnit = 0;
 			}
 
@@ -51,6 +49,8 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 				Days++;
 			}
 		}
+
+		StateApplyToUI();
 	}
 }
 
@@ -59,7 +59,7 @@ void ACPP_PlayerState::Initialize()
 	isOnTimer = false;
 	Timer = 0;
 
-	Days = 0;
+	Days = 1;
 	Hours = 9;
 
 	ChangeTemperature();
@@ -85,12 +85,15 @@ void ACPP_PlayerState::StartTimer()
 
 void ACPP_PlayerState::StateApplyToUI()
 {
-	auto PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(WidgetType::PlayerInfo));
+	auto PlayerInfoWidget = Cast<UPlayerInfoUI>(UManagers::Get(GetWorld())->UI()->GetWidget(EWidgetType::PlayerInfo));
 	PlayerInfoWidget->SetHP(MaxHP, CurHP);
 	PlayerInfoWidget->SetHunger(MaxHunger, CurHunger);
 	PlayerInfoWidget->SetThirsty(MaxThirsty, CurThirsty);
 	PlayerInfoWidget->SetTemperature(MaxTemperature, CurTemperature);
 	PlayerInfoWidget->SetHumidity(MaxHumidity, CurHumidity);
+	PlayerInfoWidget->SetDays(Days);
+	PlayerInfoWidget->SetHours(Hours, Timer / RealTimeSecondToInGameHour * 60);
+
 }
 
 void ACPP_PlayerState::IncreaseHP(float Value)

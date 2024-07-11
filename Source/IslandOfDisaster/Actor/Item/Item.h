@@ -6,6 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+UENUM(BlueprintType)
+enum class EItem : uint8 {
+	Temp	UMETA(DisplayName="Temp")
+};
+
 UCLASS()
 class ISLANDOFDISASTER_API AItem : public AActor
 {
@@ -16,21 +21,28 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, Category = Info)
+	FString Name;
+	UPROPERTY(EditAnywhere, Category=Info)
+	FString Description;
+	
 	UPROPERTY(EditAnywhere, Category=Materials)
 	class UMaterialInterface* DefaultMaterial;
 	UPROPERTY(EditAnywhere, Category = Materials)
-	class UMaterialInterface* SelectedMaterial;
+	class UMaterialInterface* FocusedMaterial;
 
-	void Selected();
-	void NotSelected();
+	UPROPERTY(EditAnywhere, Category = Texture)
+	TObjectPtr<UTexture2D> Texture;
+
+	void Focused();
+	void NotFocused();
 	void Picked();
-
-	FString Description;
+	void Droped();
 
 private:
 	TObjectPtr<UStaticMeshComponent> Mesh;
 
-	bool IsSelected;
-	bool IsNotSelected;
+	bool IsFocused;
+	bool IsNotFocused;
 
 };

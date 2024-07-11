@@ -8,11 +8,11 @@
 	if (!Type##Object) Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
 	Object = Type##Object; \
 
-UUserWidget* UUIManager::GetWidget(WidgetType Type) {
+UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 	UUserWidget* Object = nullptr;
 
 	switch (Type) {
-	case WidgetType::PlayerInfo:
+	case EWidgetType::PlayerInfo:
 		CreateOrSetWidget(Object, PlayerInfo);
 		break;
 	}
@@ -20,13 +20,13 @@ UUserWidget* UUIManager::GetWidget(WidgetType Type) {
 	return Object;
 }
 
-void UUIManager::ShowWidget(WidgetType Type)
+void UUIManager::ShowWidget(EWidgetType Type)
 {
 	UUserWidget* Object = GetWidget(Type);
 	if (Object) Object->AddToViewport();
 }
 
-void UUIManager::HideWidget(WidgetType Type)
+void UUIManager::HideWidget(EWidgetType Type)
 {
 	UUserWidget* Object = GetWidget(Type);
 	if (Object) Object->RemoveFromViewport();

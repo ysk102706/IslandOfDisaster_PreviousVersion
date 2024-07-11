@@ -6,7 +6,7 @@
 #include "UIManager.generated.h"
 
 UENUM(BlueprintType)
-enum class WidgetType : uint8 {
+enum class EWidgetType : uint8 {
 	PlayerInfo      UMETA(DisplayName="PlayerInfo")
 };
 
@@ -19,9 +19,9 @@ class ISLANDOFDISASTER_API UUIManager : public UObject
 	GENERATED_BODY()
 	
 public:
-	UUserWidget* GetWidget(WidgetType Type);
-	void ShowWidget(WidgetType Type);
-	void HideWidget(WidgetType Type);
+	UUserWidget* GetWidget(EWidgetType Type);
+	void ShowWidget(EWidgetType Type);
+	void HideWidget(EWidgetType Type);
 
 	UPROPERTY(EditAnywhere, Category=Widget)
 	TSubclassOf<class UPlayerInfoUI> PlayerInfoWidget;

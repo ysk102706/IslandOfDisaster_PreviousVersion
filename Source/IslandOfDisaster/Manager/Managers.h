@@ -7,6 +7,7 @@
 #include "Managers.generated.h"
 
 class UUIManager;
+class ACPP_Player;
 
 /**
  * 
@@ -20,6 +21,8 @@ public:
 	UManagers();
 	void InitManager();
 	UUIManager* UI();
+	void SetPlayer(ACPP_Player* Player);
+	ACPP_Player* Player();
 
 	static UManagers* Get(const UWorld* World);
 
@@ -28,5 +31,7 @@ private:
 	TSubclassOf<UUIManager> UIManagerClass;
 	
 	TObjectPtr<UUIManager> UIManagerObject;
+
+	TObjectPtr<ACPP_Player> PlayerObject;
 
 };

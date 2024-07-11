@@ -2,12 +2,13 @@
 
 
 #include "Item.h"
+#include "../../Manager/Managers.h"
+#include "../Player/CPP_Player.h"
 
 AItem::AItem()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	
 }
 
 void AItem::BeginPlay()
@@ -17,7 +18,7 @@ void AItem::BeginPlay()
 	Mesh = FindComponentByClass<UStaticMeshComponent>();
 	
 
-	NotSelected();
+	NotFocused();
 }
 
 void AItem::Tick(float DeltaTime)
@@ -26,22 +27,22 @@ void AItem::Tick(float DeltaTime)
 
 }
 
-void AItem::Selected()
+void AItem::Focused()
 {
-	if (!IsSelected) {
-		IsSelected = true;
-		IsNotSelected = false;
+	if (!IsFocused) {
+		IsFocused = true;
+		IsNotFocused = false;
 		
 		Mesh->bRenderCustomDepth = true;
-		Mesh->SetMaterial(0, SelectedMaterial);
+		Mesh->SetMaterial(0, FocusedMaterial);
 	}
 }
 
-void AItem::NotSelected()
+void AItem::NotFocused()
 {
-	if (!IsNotSelected) {
-		IsNotSelected = true;
-		IsSelected = false;
+	if (!IsNotFocused) {
+		IsNotFocused = true;
+		IsFocused = false;
 
 		Mesh->bRenderCustomDepth = false;
 		Mesh->SetMaterial(0, DefaultMaterial);
@@ -50,5 +51,19 @@ void AItem::NotSelected()
 
 void AItem::Picked()
 {
-	Destroy();
+	if (UManagers::Get(GetWorld())->Player()->Inventory->AddItem(this)) {
+		SetActorLocation(FVector(0, 0, -100));
+		Mesh->SetWorldLocation(FVector(0, 0, -100));
+		Mesh->SetSimulatePhysics(false);
+	}
+}
+
+void AItem::Droped()
+{
+	auto Player = UManagers::Get(GetWorld())->Player();
+	FVector Pos = Player->GetActorLocation() + FVector(0, 0, 60);
+	SetActorLocation(Pos);
+	Mesh->SetSimulatePhysics(true);
+	Mesh->SetWorldLocation(Pos);
+	Mesh->AddVelocityChangeImpulseAtLocation(UManagers::Get(GetWorld())->Player()->GetForwardVector() * 500, Pos);
 }

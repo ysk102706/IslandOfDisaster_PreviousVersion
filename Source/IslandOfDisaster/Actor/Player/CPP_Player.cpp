@@ -13,19 +13,21 @@
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
 
-#define PI 3.1415926535
-#define Deg2Rad PI / 180
-#define GetForwardVectorInYaw(angle) FVector(FMath::Cos(angle * Deg2Rad), FMath::Sin(angle * Deg2Rad), 0)
-#define GetRightVectorInYaw(angle) FVector(-FMath::Sin(angle * Deg2Rad), FMath::Cos(angle * Deg2Rad), 0)
-
 ACPP_Player::ACPP_Player()
 {
- 	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = true;
 }
 
 void ACPP_Player::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UManagers::Get(GetWorld())->SetPlayer(this);
+	Inventory = NewObject<AInventory>();
+
+	Inventory->SetWorld(GetWorld());
+	Inventory->SetNoneItemTexture(NoneItemTexture);
+	Inventory->SelectItem(0);
 
 	PlayerCamera = FindComponentByClass<UCameraComponent>();
 
@@ -35,7 +37,8 @@ void ACPP_Player::BeginPlay()
 		}
 	}
 
-	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(WidgetType::PlayerInfo);
+	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+
 }
 
 void ACPP_Player::Tick(float DeltaTime)
@@ -55,13 +58,15 @@ void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EIC->BindAction(IA_Move, ETriggerEvent::Triggered, this, &ACPP_Player::Move);
 		EIC->BindAction(IA_Camera, ETriggerEvent::Triggered, this, &ACPP_Player::Camera);
 		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
+		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
+		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
 	}
 }
 
 void ACPP_Player::Move(const FInputActionValue& Value)
 {
-	FVector f_dir = GetForwardVectorInYaw(GetControlRotation().Yaw);
-	FVector r_dir = GetRightVectorInYaw(GetControlRotation().Yaw);
+	FVector f_dir = GetForwardVector();
+	FVector r_dir = GetForwardVector().Cross(FVector(0, 0, -1));
 	AddMovementInput(f_dir, Value.Get<FVector2D>().X);
 	AddMovementInput(r_dir, Value.Get<FVector2D>().Y);
 }
@@ -74,14 +79,24 @@ void ACPP_Player::Camera(const FInputActionValue& Value)
 
 void ACPP_Player::PickItem(const FInputActionValue& Value)
 {
-	if (SelectedItem) SelectedItem->Picked();
+	if (FocusedItem) FocusedItem->Picked();
+}
+
+void ACPP_Player::DropItem(const FInputActionValue& Value)
+{
+	Inventory->DropItem();
+}
+
+void ACPP_Player::SelectItem(const FInputActionValue& Value)
+{
+	Inventory->SelectItem(Value.Get<float>());
 }
 
 void ACPP_Player::ItemCheckRayCast()
 {
 	FHitResult Hit;
 
-	FVector Forward = PlayerCamera->GetForwardVector();
+	FVector Forward = GetForwardVector();
 	FVector Start = PlayerCamera->GetComponentLocation();
 	FVector End = Start + Forward * RayLength;
 
@@ -91,10 +106,26 @@ void ACPP_Player::ItemCheckRayCast()
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
+		auto actor = Hit.GetActor();
 		auto Item = Cast<AItem>(Hit.GetActor());
-		if (Item) Item->Selected();
-		else if (SelectedItem) SelectedItem->NotSelected();
-		SelectedItem = Item;
+		if (Item) Item->Focused();
+		if (FocusedItem && FocusedItem != Item) FocusedItem->NotFocused();
+		FocusedItem = Item;
 	}
-	else if (SelectedItem) SelectedItem->NotSelected();
+	else if (FocusedItem) FocusedItem->NotFocused();
+}
+
+FVector ACPP_Player::GetForwardVector()
+{
+	return PlayerCamera->GetForwardVector();
+}
+
+TObjectPtr<UTexture2D> ACPP_Player::GetSelectedItemBG()
+{
+	return SelectedItemBGTexture;
+}
+
+TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
+{
+	return NotSelectedItemBGTexture;
 }
