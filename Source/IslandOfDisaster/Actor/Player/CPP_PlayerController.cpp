@@ -6,3 +6,7 @@
 void ACPP_PlayerController::BeginPlay() {
 	bEnableClickEvents = true;
 }
+
+void ACPP_PlayerController::SetCursorVisibility(bool Visibility) {
+	bShowMouseCursor = Visibility;
+}

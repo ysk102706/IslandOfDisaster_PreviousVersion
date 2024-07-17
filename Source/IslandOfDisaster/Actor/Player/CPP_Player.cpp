@@ -12,10 +12,15 @@
 #include "CPP_PlayerState.h"
 #include "Camera/CameraComponent.h"
 #include "DrawDebugHelpers.h"
+#include "../../UI/ManufactureUI.h"
+#include "CPP_PlayerController.h"
+#include "../../Manager/DataLoadManager.h"
 
 ACPP_Player::ACPP_Player()
 {
 	PrimaryActorTick.bCanEverTick = true;
+
+	isOpenManufacture = false;
 }
 
 void ACPP_Player::BeginPlay()
@@ -28,6 +33,8 @@ void ACPP_Player::BeginPlay()
 	Inventory->SetWorld(GetWorld());
 	Inventory->SetNoneItemTexture(NoneItemTexture);
 	Inventory->SelectItem(0);
+
+	UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
 
 	PlayerCamera = FindComponentByClass<UCameraComponent>();
 
@@ -48,6 +55,8 @@ void ACPP_Player::Tick(float DeltaTime)
 	GetController()->GetPlayerState<ACPP_PlayerState>()->Tick(DeltaTime);
 
 	ItemCheckRayCast();
+
+	InputDelayTimer += DeltaTime;
 }
 
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -60,21 +69,26 @@ void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
 		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
 		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
+		EIC->BindAction(IA_Manufacture, ETriggerEvent::Triggered, this, &ACPP_Player::Manufacture);
 	}
 }
 
 void ACPP_Player::Move(const FInputActionValue& Value)
 {
-	FVector f_dir = GetForwardVector();
-	FVector r_dir = GetForwardVector().Cross(FVector(0, 0, -1));
-	AddMovementInput(f_dir, Value.Get<FVector2D>().X);
-	AddMovementInput(r_dir, Value.Get<FVector2D>().Y);
+	if (!isOpenManufacture) {
+		FVector f_dir = GetForwardVector();
+		FVector r_dir = GetForwardVector().Cross(FVector(0, 0, -1));
+		AddMovementInput(f_dir, Value.Get<FVector2D>().X);
+		AddMovementInput(r_dir, Value.Get<FVector2D>().Y);
+	}
 }
 
 void ACPP_Player::Camera(const FInputActionValue& Value)
 {
-	AddControllerYawInput(Value.Get<FVector2D>().X);
-	AddControllerPitchInput(Value.Get<FVector2D>().Y);
+	if (!isOpenManufacture) {
+		AddControllerYawInput(Value.Get<FVector2D>().X);
+		AddControllerPitchInput(Value.Get<FVector2D>().Y);
+	}
 }
 
 void ACPP_Player::PickItem(const FInputActionValue& Value)
@@ -90,6 +104,22 @@ void ACPP_Player::DropItem(const FInputActionValue& Value)
 void ACPP_Player::SelectItem(const FInputActionValue& Value)
 {
 	Inventory->SelectItem(Value.Get<float>());
+}
+
+void ACPP_Player::Manufacture(const FInputActionValue& Value)
+{
+	if (InputDelayTimer >= 1) {
+		InputDelayTimer = 0;
+
+		isOpenManufacture = !isOpenManufacture;
+		if (isOpenManufacture) {
+			UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Manufacture);
+			UManagers::Get(GetWorld())->DataLoad()->LoadSelectedManufacturedItem(GetWorld(), 1);
+			UManagers::Get(GetWorld())->DataLoad()->LoadIngredientItems(GetWorld(), 1);
+		}
+		else UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::Manufacture);
+		Cast<ACPP_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->SetCursorVisibility(isOpenManufacture);
+	}
 }
 
 void ACPP_Player::ItemCheckRayCast()

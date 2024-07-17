@@ -31,6 +31,8 @@ public:
 	class UInputAction* IA_Drop;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_SelectItem;
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* IA_Manufacture;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
 	float RayLength;
@@ -52,6 +54,8 @@ public:
 	void DropItem(const FInputActionValue& Value);
 	UFUNCTION()
 	void SelectItem(const FInputActionValue& Value);
+	UFUNCTION()
+	void Manufacture(const FInputActionValue& Value);
 
 	void ItemCheckRayCast();
 
@@ -65,5 +69,8 @@ public:
 private:
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 	TObjectPtr<AItem> FocusedItem;
+
+	bool isOpenManufacture;
+	float InputDelayTimer;
 
 };

@@ -6,7 +6,8 @@
 #include "Engine/GameInstance.h"
 #include "Managers.generated.h"
 
-class UUIManager;
+class UUIManager; 
+class UDataLoadManager;
 class ACPP_Player;
 
 /**
@@ -20,7 +21,10 @@ class ISLANDOFDISASTER_API UManagers : public UGameInstance
 public:
 	UManagers();
 	void InitManager();
+	
 	UUIManager* UI();
+	UDataLoadManager* DataLoad();
+
 	void SetPlayer(ACPP_Player* Player);
 	ACPP_Player* Player();
 
@@ -29,9 +33,11 @@ public:
 private:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UUIManager> UIManagerClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDataLoadManager> DataLoadManagerClass;
 	
 	TObjectPtr<UUIManager> UIManagerObject;
-
+	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
 	TObjectPtr<ACPP_Player> PlayerObject;
 
 };

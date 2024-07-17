@@ -6,6 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "ManufactureUI.generated.h"
 
+struct IngredientItemData {
+	FString Name;
+	int Count;
+};
+
 /**
  * 
  */
@@ -14,4 +19,56 @@ class ISLANDOFDISASTER_API UManufactureUI : public UUserWidget
 {
 	GENERATED_BODY()
 	
+public:
+	virtual void NativeConstruct() override;
+
+	void AddManufacturedItem(UTexture2D* Texture, int Id, FString Name);
+	void SelectManufacturedItem(UTexture2D* Texture, int Id, FString Name, FString Description);
+	void ResetIngredientItemList();
+	void AddIngredientItem(UTexture2D* Texture, FString Name, FString Description, int Count);
+
+	UFUNCTION()
+	void Manufacture();
+	
+	void SetIsManufacture(bool Value);
+
+	UPROPERTY(EditAnywhere, Category=Widget)
+	TSubclassOf<class UManufacturedItemListUI> ManufacturedItemListWidget;
+	UPROPERTY(EditAnywhere, Category=Widget)
+	float SB_ManufacturedItemListSize;
+	UPROPERTY(EditAnywhere, Category = Widget)
+	float ManufacturedItemListLineSpace;
+
+	UPROPERTY(EditAnywhere, Category = Widget)
+	TSubclassOf<class UIngredientItemListUI> IngredientItemListWidget;
+	UPROPERTY(EditAnywhere, Category = Widget)
+	float SB_IngredientItemListWidth;
+	UPROPERTY(EditAnywhere, Category = Widget)
+	float SB_IngredientItemListHeight;
+	UPROPERTY(EditAnywhere, Category = Widget)
+	float IngredientItemListLineSpace;
+
+private:
+	UPROPERTY(meta=(BindWidget))
+	class UScrollBox* SB_ManufacturedItemList;
+	UPROPERTY(meta = (BindWidget))
+	class UScrollBox* SB_IngredientItemList;
+
+	UPROPERTY(meta = (BindWidget))
+	class UImage* IMG_Item;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TItemName;
+	UPROPERTY(meta = (BindWidget))
+	class UTextBlock* TItemDescription;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* BManufacture;
+
+	TArray<class UHorizontalBox*> ManufacturedItemHorizontalBoxs;
+	TArray<class UHorizontalBox*> IngredientItemHorizontalBoxs;
+	TArray<IngredientItemData> Ingredients;
+
+	int SelectedItemId;
+
+	bool isManufacture;
 };

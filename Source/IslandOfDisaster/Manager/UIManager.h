@@ -7,7 +7,8 @@
 
 UENUM(BlueprintType)
 enum class EWidgetType : uint8 {
-	PlayerInfo      UMETA(DisplayName="PlayerInfo")
+	PlayerInfo				UMETA(DisplayName="PlayerInfo"),
+	Manufacture    UMETA(DisplayName="Manufacture")
 };
 
 /**
@@ -25,7 +26,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category=Widget)
 	TSubclassOf<class UPlayerInfoUI> PlayerInfoWidget;
+	UPROPERTY(EditAnywhere, Category = Widget)
+	TSubclassOf<class UManufactureUI> ManufactureWidget;
 
 	TObjectPtr<UUserWidget> PlayerInfoObject;
+	TObjectPtr<UUserWidget> ManufactureObject;
 
 };
