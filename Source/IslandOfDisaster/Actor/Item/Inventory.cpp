@@ -122,8 +122,11 @@ void AInventory::Consume(FString Name, int Count)
 		}
 	}
 
-	while (Count--) Contents[ItemIdx].RemoveAt(0);
-
+	if (Name == TEXT("도끼") || Name == TEXT("망치") || Name == TEXT("바늘")) {
+		Contents[ItemIdx][0]->Durability--;
+		if (!Contents[ItemIdx][0]->Durability) Contents[ItemIdx].RemoveAt(0);
+	}
+	else while (Count--) Contents[ItemIdx].RemoveAt(0);
 	(*ContentMap->Find(Name)) = Contents[ItemIdx].Num();
 	if (!(*ContentMap->Find(Name))) ContentMap->Remove(Name);
 
