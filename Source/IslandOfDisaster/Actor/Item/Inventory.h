@@ -24,12 +24,16 @@ public:
 
 	void SetWorld(UWorld* PlayerWorld);
 	void SetNoneItemTexture(UTexture2D* Texture);
+	void SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items);
 
+	int32 GetItemCount(FString Name);
+	void Consume(FString Name, int Count);
 
 private:
 	UWorld* World;
 
 	TArray<TObjectPtr<AItem>> Contents[7];
+	TMap<FString, int>* ContentMap;
 	int SelectedItemIdx;
 
 	TObjectPtr<UTexture2D> NoneItemTexture;

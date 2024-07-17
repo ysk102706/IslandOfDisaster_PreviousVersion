@@ -20,29 +20,38 @@ public:
 	AItem();
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
+	void Init(UTexture2D* ItemTexture, FString ItemName, FString ItemDescription, int ManufactureCount, bool IsItemErection, bool IsItemUsable, int ItemDurability, bool IsItemExit);
 
-	UPROPERTY(EditAnywhere, Category = Info)
-	FString Name;
-	UPROPERTY(EditAnywhere, Category=Info)
-	FString Description;
 	
 	UPROPERTY(EditAnywhere, Category=Materials)
 	class UMaterialInterface* DefaultMaterial;
 	UPROPERTY(EditAnywhere, Category = Materials)
 	class UMaterialInterface* FocusedMaterial;
 
-	UPROPERTY(EditAnywhere, Category = Texture)
 	TObjectPtr<UTexture2D> Texture;
+
+	UPROPERTY(EditAnywhere)
+	int Id;
+
+	FString Name;
+	FString Description;
+	int ManufacturedItemCount;
+	bool IsErection;
+	bool IsUsable;
+	int Durability;
+	bool IsExit;
 
 	void Focused();
 	void NotFocused();
-	void Picked();
+	bool Picked();
 	void Droped();
 
 private:
 	TObjectPtr<UStaticMeshComponent> Mesh;
+	
 
 	bool IsFocused;
 	bool IsNotFocused;
 
+	bool IsLoaded;
 };

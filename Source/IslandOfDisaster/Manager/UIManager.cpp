@@ -3,6 +3,7 @@
 
 #include "UIManager.h"
 #include "../UI/PlayerInfoUI.h"
+#include "../UI/ManufactureUI.h"
 
 #define CreateOrSetWidget(Object, Type) \
 	if (!Type##Object) Type##Object = CreateWidget<U##Type##UI>(GetWorld(), Type##Widget); \
@@ -14,6 +15,9 @@ UUserWidget* UUIManager::GetWidget(EWidgetType Type) {
 	switch (Type) {
 	case EWidgetType::PlayerInfo:
 		CreateOrSetWidget(Object, PlayerInfo);
+		break;
+	case EWidgetType::Manufacture:
+		CreateOrSetWidget(Object, Manufacture);
 		break;
 	}
 

@@ -8,7 +8,7 @@ public class IslandOfDisaster : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput", "DatabaseSupport", "SQLiteCore", "SQLiteSupport" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

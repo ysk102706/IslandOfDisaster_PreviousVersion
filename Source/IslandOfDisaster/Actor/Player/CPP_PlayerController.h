@@ -16,4 +16,6 @@ class ISLANDOFDISASTER_API ACPP_PlayerController : public APlayerController
 	
 public:
 	void BeginPlay();
+
+	void SetCursorVisibility(bool Visibility);
 };

@@ -13,6 +13,7 @@ AInventory::AInventory()
 	PrimaryActorTick.bCanEverTick = true;
 
 	for (int i = 0; i < 7; i++) Contents[i].Add(nullptr);
+	ContentMap = new TMap<FString, int>();
 }
 
 void AInventory::BeginPlay()
@@ -40,6 +41,7 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 				Contents[i].Add(Item);
 				if (auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
 					Widget->ChangeInventoryItemCnt(i, FString::Printf(TEXT("%d"), Contents[i].Num()));
+					(*ContentMap->Find(Item->Name))++;
 				}
 				return true;
 			}
@@ -52,6 +54,7 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 			if (auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo))) {
 				Widget->ChangeInventoryItemTexture(i, Item->Texture);
 				Widget->ChangeInventoryItemCnt(i, "1");
+				ContentMap->Add(Item->Name, 1);
 			}
 			return true;
 		}
@@ -61,15 +64,15 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 
 void AInventory::DropItem()
 {
-	if (Contents[SelectedItemIdx][0]) {
-		Contents[SelectedItemIdx][0]->Droped();
-		Contents[SelectedItemIdx].RemoveAt(0);
-		auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo));
-		if (Widget) Widget->ChangeInventoryItemCnt(SelectedItemIdx, !Contents[SelectedItemIdx].Num() ? "" : FString::Printf(TEXT("%d"), Contents[SelectedItemIdx].Num()));
-		if (!Contents[SelectedItemIdx].Num()) {
-			Contents[SelectedItemIdx].Add(nullptr);
-			if (Widget) Widget->ChangeInventoryItemTexture(SelectedItemIdx, NoneItemTexture);
-		}
+	auto& item = Contents[SelectedItemIdx];
+	if (item[0]) {
+		(*ContentMap->Find(item[0]->Name))--;
+		if (!*ContentMap->Find(item[0]->Name)) ContentMap->Remove(item[0]->Name);
+
+		item[0]->Droped();
+		item.RemoveAt(0);
+
+		SetInventoryUI(SelectedItemIdx, item);
 	}
 }
 
@@ -90,4 +93,39 @@ void AInventory::SetWorld(UWorld* PlayerWorld)
 void AInventory::SetNoneItemTexture(UTexture2D* Texture)
 {
 	NoneItemTexture = Texture;
+}
+
+void AInventory::SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items)
+{
+	auto Widget = Cast<UPlayerInfoUI>(UManagers::Get(World)->UI()->GetWidget(EWidgetType::PlayerInfo));
+	if (Widget) Widget->ChangeInventoryItemCnt(Idx, !Items.Num() ? "" : FString::Printf(TEXT("%d"), Items.Num()));
+	if (!Items.Num()) {
+		Items.Add(nullptr);
+		if (Widget) Widget->ChangeInventoryItemTexture(Idx, NoneItemTexture);
+	}
+}
+
+int32 AInventory::GetItemCount(FString Name)
+{
+	if (ContentMap->Contains(Name)) return *ContentMap->Find(Name);
+	return 0;
+}
+
+void AInventory::Consume(FString Name, int Count)
+{
+	int ItemIdx = 0;
+
+	for (int i = 0; i < 7; i++) {
+		if (Contents[i][0] && Contents[i][0]->Name == Name) {
+			ItemIdx = i;
+			break;
+		}
+	}
+
+	while (Count--) Contents[ItemIdx].RemoveAt(0);
+
+	(*ContentMap->Find(Name)) = Contents[ItemIdx].Num();
+	if (!(*ContentMap->Find(Name))) ContentMap->Remove(Name);
+
+	SetInventoryUI(ItemIdx, Contents[ItemIdx]);
 }
