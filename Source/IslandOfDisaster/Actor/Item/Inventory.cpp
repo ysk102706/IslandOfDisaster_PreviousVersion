@@ -7,6 +7,7 @@
 #include "../../Manager/UIManager.h"
 #include "../Player/CPP_Player.h"
 #include "../../UI/PlayerInfoUI.h"
+#include "../../Manager/DataLoadManager.h"
 
 AInventory::AInventory()
 {
@@ -56,6 +57,14 @@ bool AInventory::AddItem(TObjectPtr<AItem> Item)
 				Widget->ChangeInventoryItemCnt(i, "1");
 				ContentMap->Add(Item->Name, 1);
 			}
+			if (i == SelectedItemIdx) {
+				if (Contents[i][0] && Contents[i][0]->IsConstruct) {
+					IsConstruct = true;
+					ConstructPointObject = UManagers::Get(World)->DataLoad()->SpawnItemActor(World, Contents[i][0]->Id);
+					ConstructPointObject->IsConstructPoint = true;
+					ConstructPointObject->SetPhysics(false);
+				}
+			}
 			return true;
 		}
 	}
@@ -67,10 +76,19 @@ void AInventory::DropItem()
 	auto& item = Contents[SelectedItemIdx];
 	if (item[0]) {
 		(*ContentMap->Find(item[0]->Name))--;
+		
+		if (item.Num() == 1 && item[0]->IsConstruct) {
+			auto DestroyActor = ConstructPointObject;
+			ConstructPointObject = nullptr;
+
+			DestroyActor->DestroyActor();
+		}
+
 		if (!*ContentMap->Find(item[0]->Name)) ContentMap->Remove(item[0]->Name);
 
 		item[0]->Droped();
 		item.RemoveAt(0);
+
 
 		SetInventoryUI(SelectedItemIdx, item);
 	}
@@ -83,6 +101,20 @@ void AInventory::SelectItem(int Idx)
 	}
 	
 	SelectedItemIdx = Idx;
+	
+	if (Contents[Idx][0] && Contents[Idx][0]->IsConstruct && !ConstructPointObject) {
+		IsConstruct = true;
+
+		ConstructPointObject = UManagers::Get(World)->DataLoad()->SpawnItemActor(World, Contents[Idx][0]->Id);
+		ConstructPointObject->IsConstructPoint = true;
+		ConstructPointObject->SetPhysics(false);
+	}
+	else if (ConstructPointObject) {
+		auto DestroyActor = ConstructPointObject;
+		ConstructPointObject = nullptr;
+		
+		DestroyActor->DestroyActor();
+	}
 }
 
 void AInventory::SetWorld(UWorld* PlayerWorld)
@@ -104,6 +136,19 @@ void AInventory::SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items)
 		if (Widget) Widget->ChangeInventoryItemTexture(Idx, NoneItemTexture);
 	}
 }
+
+bool AInventory::ShowConstructPoint(FVector HitPos)
+{
+	if (IsConstruct && ConstructPointObject) {
+		ConstructPointObject->SetActorLocation(HitPos);
+		ConstructPointObject->SetWorldLocation(HitPos);
+		ConstructPointObject->ConstructPoint();
+		return true;
+	}
+	return false;
+}
+
+
 
 int32 AInventory::GetItemCount(FString Name)
 {

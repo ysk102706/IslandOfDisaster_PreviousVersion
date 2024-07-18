@@ -35,7 +35,9 @@ public:
 	class UInputAction* IA_Manufacture;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
-	float RayLength;
+	float ItemCheckRayLength;
+	UPROPERTY(EditAnywhere, Category = Ray)
+	float ConstructCheckRayLength;
 
 	UPROPERTY(EditAnywhere, Category=Texture)
 	TObjectPtr<UTexture2D> NoneItemTexture;
@@ -58,6 +60,7 @@ public:
 	void Manufacture(const FInputActionValue& Value);
 
 	void ItemCheckRayCast();
+	void ConstructCheckRayCast();
 
 	FVector GetForwardVector();
 
@@ -70,7 +73,11 @@ private:
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 	TObjectPtr<AItem> FocusedItem;
 
-	bool isOpenManufacture;
-	float InputDelayTimer;
+	bool IsOpenManufacture;
+	float InputManufactureDelayTimer;
+
+	FCollisionQueryParams CQP;
+
+	bool IsConstruct;
 
 };

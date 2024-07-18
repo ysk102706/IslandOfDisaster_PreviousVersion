@@ -119,24 +119,24 @@ void UDataLoadManager::LoadItems(int Id, AItem* Item)
 		FString Name = "";
 		FString Description = "";
 		int ManufacturedItemCount = 0;
-		int IsErection = false;
+		int IsConstruct = false;
 		int IsUsable = false;
 		int Durability = 0;
 		int IsExit = false;
 
 		PStmt = new FSQLitePreparedStatement();
-		const FString Query = "select name, description, manufacturedItemCount, isErection, isUsable, durability, isExit from item where id = $Id";
+		const FString Query = "select name, description, manufacturedItemCount, isConstruct, isUsable, durability, isExit from item where id = $Id";
 		if (PStmt->Create(*Database, *Query, ESQLitePreparedStatementFlags::Persistent)) {
 			PStmt->SetBindingValueByName(TEXT("$Id"), Id);
 			if (PStmt->Step() == ESQLitePreparedStatementStepResult::Row) {
 				PStmt->GetColumnValueByIndex(0, Name);
 				PStmt->GetColumnValueByIndex(1, Description);
 				PStmt->GetColumnValueByIndex(2, ManufacturedItemCount);
-				PStmt->GetColumnValueByIndex(3, IsErection);
+				PStmt->GetColumnValueByIndex(3, IsConstruct);
 				PStmt->GetColumnValueByIndex(4, IsUsable);
 				PStmt->GetColumnValueByIndex(5, Durability);
 				PStmt->GetColumnValueByIndex(6, IsExit);
-				Item->Init(Textures[Id], Name, Description, ManufacturedItemCount, bool(IsErection), bool(IsUsable), Durability, bool(IsExit));
+				Item->Init(Textures[Id], Name, Description, ManufacturedItemCount, bool(IsConstruct), bool(IsUsable), Durability, bool(IsExit));
 			}
 		}
 		PStmt->Destroy();
