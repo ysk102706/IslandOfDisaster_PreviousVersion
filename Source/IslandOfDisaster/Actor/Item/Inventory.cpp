@@ -77,12 +77,7 @@ void AInventory::DropItem()
 	if (item[0]) {
 		(*ContentMap->Find(item[0]->Name))--;
 		
-		if (item.Num() == 1 && item[0]->IsConstruct) {
-			auto DestroyActor = ConstructPointObject;
-			ConstructPointObject = nullptr;
-
-			DestroyActor->DestroyActor();
-		}
+		if (item.Num() == 1 && item[0]->IsConstruct) ConstructPointObject->DestroyActor();
 
 		if (!*ContentMap->Find(item[0]->Name)) ContentMap->Remove(item[0]->Name);
 
@@ -109,11 +104,22 @@ void AInventory::SelectItem(int Idx)
 		ConstructPointObject->IsConstructPoint = true;
 		ConstructPointObject->SetPhysics(false);
 	}
-	else if (ConstructPointObject) {
-		auto DestroyActor = ConstructPointObject;
-		ConstructPointObject = nullptr;
+	else if (ConstructPointObject) ConstructPointObject->DestroyActor();
+}
+
+void AInventory::ConstructItem()
+{
+	auto Item = Contents[SelectedItemIdx];
+	if (Item[0]->IsConstruct) {
+		FVector Pos = ConstructPointObject->GetActorLocation();
+		Item[0]->Construct(Pos);
+		ConstructPointObject->DestroyActor();
 		
-		DestroyActor->DestroyActor();
+		(*ContentMap->Find(Item[0]->Name))--;
+		Item.RemoveAt(0);
+		SetInventoryUI(SelectedItemIdx, Item);
+
+		SelectItem(SelectedItemIdx);
 	}
 }
 

@@ -33,6 +33,8 @@ public:
 	class UInputAction* IA_SelectItem;
 	UPROPERTY(EditAnywhere, Category = Input)
 	class UInputAction* IA_Manufacture;
+	UPROPERTY(EditAnywhere, Category = Input)
+	class UInputAction* IA_Construct;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
 	float ItemCheckRayLength;
@@ -58,6 +60,8 @@ public:
 	void SelectItem(const FInputActionValue& Value);
 	UFUNCTION()
 	void Manufacture(const FInputActionValue& Value);
+	UFUNCTION()
+	void Construct(const FInputActionValue& Value);
 
 	void ItemCheckRayCast();
 	void ConstructCheckRayCast();

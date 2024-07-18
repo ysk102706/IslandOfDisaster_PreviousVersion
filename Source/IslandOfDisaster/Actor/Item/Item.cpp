@@ -27,13 +27,13 @@ void AItem::Tick(float DeltaTime)
 
 }
 
-void AItem::Init(UTexture2D* ItemTexture, FString ItemName, FString ItemDescription, int ManufactureCount, bool IsItemErection, bool IsItemUsable, int ItemDurability, bool IsItemExit)
+void AItem::Init(UTexture2D* ItemTexture, FString ItemName, FString ItemDescription, int ManufactureCount, bool IsItemConstruct, bool IsItemUsable, int ItemDurability, bool IsItemExit)
 {
 	Texture = ItemTexture;
 	Name = ItemName;
 	Description = ItemDescription;
 	ManufacturedItemCount = ManufactureCount;
-	IsConstruct = IsItemErection;
+	IsConstruct = IsItemConstruct;
 	IsUsable = IsItemUsable;
 	Durability = ItemDurability;
 	IsExit = IsItemExit;
@@ -43,7 +43,7 @@ void AItem::Init(UTexture2D* ItemTexture, FString ItemName, FString ItemDescript
 
 void AItem::Focused()
 {
-	if (!IsFocused && !IsConstructPoint) {
+	if (!IsFocused && !IsConstructPoint && !Constructed) {
 		IsFocused = true;
 		IsNotFocused = false;
 		
@@ -87,9 +87,14 @@ void AItem::Droped()
 	Mesh->AddVelocityChangeImpulseAtLocation(UManagers::Get(GetWorld())->Player()->GetForwardVector() * 500, Pos);
 }
 
-void AItem::Construct()
+void AItem::Construct(FVector Pos)
 {
+	SetActorLocation(Pos);
+	SetWorldLocation(Pos);
 
+	Mesh->SetCollisionProfileName(TEXT("BlockAllDynamic"));
+
+	Constructed = true;
 }
 
 void AItem::ConstructPoint()

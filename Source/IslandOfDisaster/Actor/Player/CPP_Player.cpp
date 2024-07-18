@@ -72,7 +72,8 @@ void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
 		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
 		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
-		EIC->BindAction(IA_Manufacture, ETriggerEvent::Triggered, this, &ACPP_Player::Manufacture);
+		EIC->BindAction(IA_Manufacture, ETriggerEvent::Started, this, &ACPP_Player::Manufacture);
+		EIC->BindAction(IA_Construct, ETriggerEvent::Started, this, &ACPP_Player::Construct);
 	}
 }
 
@@ -111,7 +112,7 @@ void ACPP_Player::SelectItem(const FInputActionValue& Value)
 
 void ACPP_Player::Manufacture(const FInputActionValue& Value)
 {
-	if (InputManufactureDelayTimer >= 1) {
+	if (InputManufactureDelayTimer >= 0.2f) {
 		InputManufactureDelayTimer = 0;
 
 		IsOpenManufacture = !IsOpenManufacture;
@@ -123,6 +124,11 @@ void ACPP_Player::Manufacture(const FInputActionValue& Value)
 		else UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::Manufacture);
 		Cast<ACPP_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->SetCursorVisibility(IsOpenManufacture);
 	}
+}
+
+void ACPP_Player::Construct(const FInputActionValue& Value)
+{
+	if (IsConstruct) Inventory->ConstructItem();
 }
 
 void ACPP_Player::ItemCheckRayCast()

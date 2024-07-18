@@ -52,7 +52,7 @@ public:
 	void NotFocused();
 	bool Picked();
 	void Droped();
-	void Construct();
+	void Construct(FVector Pos);
 	void ConstructPoint();
 
 	void DestroyActor();

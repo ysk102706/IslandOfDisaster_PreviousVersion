@@ -21,6 +21,7 @@ public:
 	bool AddItem(TObjectPtr<AItem> Item);
 	void DropItem();
 	void SelectItem(int Idx);
+	void ConstructItem();
 
 	void SetWorld(UWorld* PlayerWorld);
 	void SetNoneItemTexture(UTexture2D* Texture);
