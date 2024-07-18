@@ -162,9 +162,10 @@ void ACPP_Player::ConstructCheckRayCast()
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
-		auto a = Cast<AItem>(Hit.GetActor());
-		if (a && a->IsConstructPoint) CQP.AddIgnoredActor(a);
-		else IsConstruct = Inventory->ShowConstructPoint(Hit.Location);
+		auto Actor = Hit.GetActor();
+		auto ConstructPoint = Cast<AItem>(Actor);
+		if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
+		else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
 	}
 	else IsConstruct = false;
 }

@@ -27,7 +27,7 @@ public:
 	void SetNoneItemTexture(UTexture2D* Texture);
 	void SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items);
 
-	bool ShowConstructPoint(FVector HitPos);
+	bool ShowConstructPoint(FString HitObjectName, FVector HitPos);
 
 	int32 GetItemCount(FString Name);
 	void Consume(FString Name, int Count);

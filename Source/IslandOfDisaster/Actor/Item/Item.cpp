@@ -97,9 +97,9 @@ void AItem::Construct(FVector Pos)
 	Constructed = true;
 }
 
-void AItem::ConstructPoint()
+void AItem::ConstructPoint(bool Value)
 {
-	Mesh->SetMaterial(0, ConstructAvailableMaterial);
+	Mesh->SetMaterial(0, Value ? ConstructAvailableMaterial : ConstructUnavailableMaterial);
 }
 
 void AItem::DestroyActor()

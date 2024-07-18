@@ -84,7 +84,6 @@ void AInventory::DropItem()
 		item[0]->Droped();
 		item.RemoveAt(0);
 
-
 		SetInventoryUI(SelectedItemIdx, item);
 	}
 }
@@ -109,13 +108,15 @@ void AInventory::SelectItem(int Idx)
 
 void AInventory::ConstructItem()
 {
-	auto Item = Contents[SelectedItemIdx];
+	auto& Item = Contents[SelectedItemIdx];
 	if (Item[0]->IsConstruct) {
 		FVector Pos = ConstructPointObject->GetActorLocation();
 		Item[0]->Construct(Pos);
 		ConstructPointObject->DestroyActor();
 		
 		(*ContentMap->Find(Item[0]->Name))--;
+		if (!(*ContentMap->Find(Item[0]->Name))) ContentMap->Remove(Item[0]->Name);
+
 		Item.RemoveAt(0);
 		SetInventoryUI(SelectedItemIdx, Item);
 
@@ -143,13 +144,13 @@ void AInventory::SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items)
 	}
 }
 
-bool AInventory::ShowConstructPoint(FVector HitPos)
+bool AInventory::ShowConstructPoint(FString HitObjectName, FVector HitPos)
 {
 	if (IsConstruct && ConstructPointObject) {
 		ConstructPointObject->SetActorLocation(HitPos);
 		ConstructPointObject->SetWorldLocation(HitPos);
-		ConstructPointObject->ConstructPoint();
-		return true;
+		ConstructPointObject->ConstructPoint(HitObjectName == ConstructPointObject->ConstructAvailablePlaceName);
+		return HitObjectName == ConstructPointObject->ConstructAvailablePlaceName;
 	}
 	return false;
 }

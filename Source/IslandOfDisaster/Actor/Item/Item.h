@@ -48,12 +48,15 @@ public:
 	bool Constructed;
 	bool IsConstructPoint;
 
+	UPROPERTY(EditAnywhere)
+	FString ConstructAvailablePlaceName;
+
 	void Focused();
 	void NotFocused();
 	bool Picked();
 	void Droped();
 	void Construct(FVector Pos);
-	void ConstructPoint();
+	void ConstructPoint(bool Value);
 
 	void DestroyActor();
 	
