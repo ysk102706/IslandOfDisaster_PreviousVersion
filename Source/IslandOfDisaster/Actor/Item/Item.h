@@ -27,6 +27,10 @@ public:
 	class UMaterialInterface* DefaultMaterial;
 	UPROPERTY(EditAnywhere, Category = Materials)
 	class UMaterialInterface* FocusedMaterial;
+	UPROPERTY(EditAnywhere, Category = Materials)
+	class UMaterialInterface* ConstructAvailableMaterial;
+	UPROPERTY(EditAnywhere, Category = Materials)
+	class UMaterialInterface* ConstructUnavailableMaterial;
 
 	TObjectPtr<UTexture2D> Texture;
 
@@ -36,22 +40,35 @@ public:
 	FString Name;
 	FString Description;
 	int ManufacturedItemCount;
-	bool IsErection;
+	bool IsConstruct;
 	bool IsUsable;
 	int Durability;
 	bool IsExit;
+
+	bool Constructed;
+	bool IsConstructPoint;
+
+	UPROPERTY(EditAnywhere)
+	FString ConstructAvailablePlaceName;
 
 	void Focused();
 	void NotFocused();
 	bool Picked();
 	void Droped();
+	void Construct(FVector Pos);
+	void ConstructPoint(bool Value);
+
+	void DestroyActor();
+	
+	void SetPhysics(bool Value);
+	void SetWorldLocation(FVector Pos);
 
 private:
 	TObjectPtr<UStaticMeshComponent> Mesh;
-	
 
 	bool IsFocused;
 	bool IsNotFocused;
 
 	bool IsLoaded;
+
 };

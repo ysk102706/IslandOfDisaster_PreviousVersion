@@ -21,10 +21,13 @@ public:
 	bool AddItem(TObjectPtr<AItem> Item);
 	void DropItem();
 	void SelectItem(int Idx);
+	void ConstructItem();
 
 	void SetWorld(UWorld* PlayerWorld);
 	void SetNoneItemTexture(UTexture2D* Texture);
 	void SetInventoryUI(int Idx, TArray<TObjectPtr<AItem>>& Items);
+
+	bool ShowConstructPoint(FString HitObjectName, FVector HitPos);
 
 	int32 GetItemCount(FString Name);
 	void Consume(FString Name, int Count);
@@ -37,5 +40,8 @@ private:
 	int SelectedItemIdx;
 
 	TObjectPtr<UTexture2D> NoneItemTexture;
+
+	AItem* ConstructPointObject;
+	bool IsConstruct;
 
 };

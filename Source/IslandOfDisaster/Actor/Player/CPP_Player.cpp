@@ -20,7 +20,7 @@ ACPP_Player::ACPP_Player()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	isOpenManufacture = false;
+	IsOpenManufacture = false;
 }
 
 void ACPP_Player::BeginPlay()
@@ -35,6 +35,8 @@ void ACPP_Player::BeginPlay()
 	Inventory->SelectItem(0);
 
 	UManagers::Get(GetWorld())->DataLoad()->LoadManufacturedItemList(GetWorld());
+
+	CQP.AddIgnoredActor(this->GetOwner());
 
 	PlayerCamera = FindComponentByClass<UCameraComponent>();
 
@@ -54,9 +56,10 @@ void ACPP_Player::Tick(float DeltaTime)
 
 	GetController()->GetPlayerState<ACPP_PlayerState>()->Tick(DeltaTime);
 
+	ConstructCheckRayCast();
 	ItemCheckRayCast();
 
-	InputDelayTimer += DeltaTime;
+	InputManufactureDelayTimer += DeltaTime;
 }
 
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -69,13 +72,14 @@ void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 		EIC->BindAction(IA_Pick, ETriggerEvent::Triggered, this, &ACPP_Player::PickItem);
 		EIC->BindAction(IA_Drop, ETriggerEvent::Triggered, this, &ACPP_Player::DropItem);
 		EIC->BindAction(IA_SelectItem, ETriggerEvent::Triggered, this, &ACPP_Player::SelectItem);
-		EIC->BindAction(IA_Manufacture, ETriggerEvent::Triggered, this, &ACPP_Player::Manufacture);
+		EIC->BindAction(IA_Manufacture, ETriggerEvent::Started, this, &ACPP_Player::Manufacture);
+		EIC->BindAction(IA_Construct, ETriggerEvent::Started, this, &ACPP_Player::Construct);
 	}
 }
 
 void ACPP_Player::Move(const FInputActionValue& Value)
 {
-	if (!isOpenManufacture) {
+	if (!IsOpenManufacture) {
 		FVector f_dir = GetForwardVector();
 		FVector r_dir = GetForwardVector().Cross(FVector(0, 0, -1));
 		AddMovementInput(f_dir, Value.Get<FVector2D>().X);
@@ -85,7 +89,7 @@ void ACPP_Player::Move(const FInputActionValue& Value)
 
 void ACPP_Player::Camera(const FInputActionValue& Value)
 {
-	if (!isOpenManufacture) {
+	if (!IsOpenManufacture) {
 		AddControllerYawInput(Value.Get<FVector2D>().X);
 		AddControllerPitchInput(Value.Get<FVector2D>().Y);
 	}
@@ -108,18 +112,23 @@ void ACPP_Player::SelectItem(const FInputActionValue& Value)
 
 void ACPP_Player::Manufacture(const FInputActionValue& Value)
 {
-	if (InputDelayTimer >= 1) {
-		InputDelayTimer = 0;
+	if (InputManufactureDelayTimer >= 0.2f) {
+		InputManufactureDelayTimer = 0;
 
-		isOpenManufacture = !isOpenManufacture;
-		if (isOpenManufacture) {
+		IsOpenManufacture = !IsOpenManufacture;
+		if (IsOpenManufacture) {
 			UManagers::Get(GetWorld())->UI()->ShowWidget(EWidgetType::Manufacture);
 			UManagers::Get(GetWorld())->DataLoad()->LoadSelectedManufacturedItem(GetWorld(), 1);
 			UManagers::Get(GetWorld())->DataLoad()->LoadIngredientItems(GetWorld(), 1);
 		}
 		else UManagers::Get(GetWorld())->UI()->HideWidget(EWidgetType::Manufacture);
-		Cast<ACPP_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->SetCursorVisibility(isOpenManufacture);
+		Cast<ACPP_PlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->SetCursorVisibility(IsOpenManufacture);
 	}
+}
+
+void ACPP_Player::Construct(const FInputActionValue& Value)
+{
+	if (IsConstruct) Inventory->ConstructItem();
 }
 
 void ACPP_Player::ItemCheckRayCast()
@@ -128,21 +137,37 @@ void ACPP_Player::ItemCheckRayCast()
 
 	FVector Forward = GetForwardVector();
 	FVector Start = PlayerCamera->GetComponentLocation();
-	FVector End = Start + Forward * RayLength;
-
-	FCollisionQueryParams CQP;
-	CQP.AddIgnoredActor(this->GetOwner());
-
-	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
+	FVector End = Start + Forward * ItemCheckRayLength;
 
 	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
-		auto actor = Hit.GetActor();
 		auto Item = Cast<AItem>(Hit.GetActor());
 		if (Item) Item->Focused();
 		if (FocusedItem && FocusedItem != Item) FocusedItem->NotFocused();
 		FocusedItem = Item;
 	}
-	else if (FocusedItem) FocusedItem->NotFocused();
+	else if (FocusedItem) {
+		FocusedItem->NotFocused();
+		FocusedItem = nullptr;
+	}
+}
+
+void ACPP_Player::ConstructCheckRayCast()
+{
+	FHitResult Hit;
+
+	FVector Forward = GetForwardVector();
+	FVector Start = PlayerCamera->GetComponentLocation();
+	FVector End = Start + Forward * ConstructCheckRayLength;
+
+	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
+		auto Actor = Hit.GetActor();
+		auto ConstructPoint = Cast<AItem>(Actor);
+		if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
+		else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
+	}
+	else IsConstruct = false;
 }
 
 FVector ACPP_Player::GetForwardVector()
