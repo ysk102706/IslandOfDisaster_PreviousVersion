@@ -39,6 +39,9 @@ public:
 	void ChangeTemperature();
 	void ChangeHumidity();
 
+	void ChangeAdditionalTemperature();
+	void ChangeAdditionalHumidity();
+
 	// 플레이어 상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float CurHP;
@@ -77,5 +80,8 @@ public:
 
 	int PhysiologicalPhenomenonUnit;
 	int TemperatureAndHumidityUnit;
+
+	int AdditionalTemperature;
+	int AdditionalHumidity;
 	
 };

@@ -8,6 +8,7 @@
 
 class UUIManager; 
 class UDataLoadManager;
+class UDisasterManager;
 class ACPP_Player;
 
 /**
@@ -24,6 +25,8 @@ public:
 	
 	UUIManager* UI();
 	UDataLoadManager* DataLoad();
+	UDisasterManager* Disaster();
+
 
 	void SetPlayer(ACPP_Player* Player);
 	ACPP_Player* Player();
@@ -35,9 +38,12 @@ private:
 	TSubclassOf<UUIManager> UIManagerClass;
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<UDataLoadManager> DataLoadManagerClass;
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<UDisasterManager> DisasterManagerClass;
 	
 	TObjectPtr<UUIManager> UIManagerObject;
 	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
+	TObjectPtr<UDisasterManager> DisasterManagerObject;
 	TObjectPtr<ACPP_Player> PlayerObject;
 
 };

@@ -4,6 +4,7 @@
 #include "Managers.h"
 #include "UIManager.h"
 #include "DataLoadManager.h"
+#include "DisasterManager.h"
 #include "Kismet/GameplayStatics.h"
 
 #define InifManager(Type) \
@@ -13,6 +14,7 @@
 UManagers::UManagers() {
 	UIManagerClass = UUIManager::StaticClass();
 	DataLoadManagerClass = UDataLoadManager::StaticClass();
+	DisasterManagerClass = UDisasterManager::StaticClass();
 }
 
 UUIManager* UManagers::UI() {
@@ -22,6 +24,11 @@ UUIManager* UManagers::UI() {
 UDataLoadManager* UManagers::DataLoad()
 {
 	return DataLoadManagerObject;
+}
+
+UDisasterManager* UManagers::Disaster()
+{
+	return DisasterManagerObject;
 }
 
 UManagers* UManagers::Get(const UWorld* World)
@@ -43,5 +50,5 @@ ACPP_Player* UManagers::Player()
 void UManagers::InitManager() {
 	InifManager(UI);
 	InifManager(DataLoad);
-
+	InifManager(Disaster);
 }
