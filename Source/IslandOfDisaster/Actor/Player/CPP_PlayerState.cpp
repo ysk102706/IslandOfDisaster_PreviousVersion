@@ -77,7 +77,7 @@ void ACPP_PlayerState::Initialize()
 
 	StartTimer();
 
-	UManagers::Get(GetWorld())->Disaster()->Type = DisasterType(Random(0, 4));
+	UManagers::Get(GetWorld())->Disaster()->Type = EDisasterType(Random(0, 4));
 }
 
 int ACPP_PlayerState::Random(int MinInclusive, int MaxInclusive)
@@ -164,12 +164,12 @@ void ACPP_PlayerState::DecreaseHumidity(float Value)
 
 void ACPP_PlayerState::ChangeTemperature()
 {
-	CurTemperature = 22 + Random(0, 5); + AdditionalTemperature;
+	CurTemperature = 22 + Random(0, 5) + AdditionalTemperature;
 }
 
 void ACPP_PlayerState::ChangeHumidity()
 {
-	CurHumidity = 65 + Random(0, 7); + AdditionalHumidity;
+	CurHumidity = 65 + Random(0, 7) + AdditionalHumidity;
 }
 
 void ACPP_PlayerState::ChangeAdditionalTemperature()

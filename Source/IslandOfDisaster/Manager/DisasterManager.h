@@ -5,13 +5,15 @@
 #include "CoreMinimal.h"
 #include "DisasterManager.generated.h"
 
+class ADisaster;
+
 UENUM(BlueprintType)
-enum DisasterType {
+enum EDisasterType {
 	Tsunami		UMETA(DisplayName="Tsunami"),
 	Volcano		UMETA(DisplayName="Volcano"),
 	Epidemic	UMETA(DisplayName="Epidemic"),
 	Asteroid	UMETA(DisplayName="Asteroid"),
-	Typhoon		UMETA(DisplayName="Typhoon"),
+	Typhoon		UMETA(DisplayName="Typhoon")
 };
 
 /**
@@ -23,10 +25,20 @@ class ISLANDOFDISASTER_API UDisasterManager : public UObject
 	GENERATED_BODY()
 	
 public:
-	DisasterType Type;
+	void SetDisaster(EDisasterType Type);
 
-	void Effect1();
-	void Effect2();
-	void Effect3();
+	UPROPERTY(EditAnywhere, Category = Disaster)
+	TSubclassOf<ADisaster> Tsunami;
+	UPROPERTY(EditAnywhere, Category = Disaster)
+	TSubclassOf<ADisaster> Volcano;
+	UPROPERTY(EditAnywhere, Category = Disaster)
+	TSubclassOf<ADisaster> Epidemic;
+	UPROPERTY(EditAnywhere, Category = Disaster)
+	TSubclassOf<ADisaster> Asteroid;
+	UPROPERTY(EditAnywhere, Category = Disaster)
+	TSubclassOf<ADisaster> Typhoon;
+
+private:
+	ADisaster* Disaster;
 
 };

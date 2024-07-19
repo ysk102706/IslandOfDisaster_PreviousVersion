@@ -27,7 +27,6 @@ public:
 	UDataLoadManager* DataLoad();
 	UDisasterManager* Disaster();
 
-
 	void SetPlayer(ACPP_Player* Player);
 	ACPP_Player* Player();
 

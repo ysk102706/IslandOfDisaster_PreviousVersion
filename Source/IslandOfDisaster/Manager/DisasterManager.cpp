@@ -2,56 +2,31 @@
 
 
 #include "DisasterManager.h"
-#include "Kismet/GameplayStatics.h"
-#include "../Actor/Player/CPP_PlayerState.h"
+#include "../Actor/Disaster/Disaster.h"
 
-void UDisasterManager::Effect1()
+void UDisasterManager::SetDisaster(EDisasterType Type)
 {
-	switch (Type) {
-	case DisasterType::Tsunami:
+	ADisaster* SelectedDisaster = nullptr;
+	FVector Pos = FVector(0, 0, 0);
+	FRotator Rot = FRotator(0, 0, 0);
 
+	switch (Type) {
+	case EDisasterType::Tsunami:
+		SelectedDisaster = Cast<ADisaster>(GetWorld()->SpawnActor(Tsunami, &Pos, &Rot));
 		break;
-	case DisasterType::Volcano:
+	case EDisasterType::Volcano:
+		SelectedDisaster = Cast<ADisaster>(GetWorld()->SpawnActor(Volcano, &Pos, &Rot));
 		break;
-	case DisasterType::Epidemic:
+	case EDisasterType::Epidemic:
+		SelectedDisaster = Cast<ADisaster>(GetWorld()->SpawnActor(Epidemic, &Pos, &Rot));
 		break;
-	case DisasterType::Asteroid:
+	case EDisasterType::Asteroid:
+		SelectedDisaster = Cast<ADisaster>(GetWorld()->SpawnActor(Asteroid, &Pos, &Rot));
 		break;
-	case DisasterType::Typhoon:
+	case EDisasterType::Typhoon:
+		SelectedDisaster = Cast<ADisaster>(GetWorld()->SpawnActor(Typhoon, &Pos, &Rot));
 		break;
 	}
-}
 
-void UDisasterManager::Effect2()
-{
-	switch (Type) {
-	case DisasterType::Tsunami:
-		break;
-	case DisasterType::Volcano:
-		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->ChangeAdditionalTemperature();
-		break;
-	case DisasterType::Epidemic:
-		break;
-	case DisasterType::Asteroid:
-		break;
-	case DisasterType::Typhoon:
-		Cast<ACPP_PlayerState>(UGameplayStatics::GetPlayerState(GetWorld(), 0))->ChangeAdditionalHumidity();
-		break;
-	}
-}
-
-void UDisasterManager::Effect3()
-{
-	switch (Type) {
-	case DisasterType::Tsunami:
-		break;
-	case DisasterType::Volcano:
-		break;
-	case DisasterType::Epidemic:
-		break;
-	case DisasterType::Asteroid:
-		break;
-	case DisasterType::Typhoon:
-		break;
-	}
+	Disaster = ;
 }
