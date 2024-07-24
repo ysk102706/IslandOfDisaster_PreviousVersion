@@ -28,5 +28,5 @@ void UDisasterManager::SetDisaster(EDisasterType Type)
 		break;
 	}
 
-	Disaster = ;
+	Disaster = SelectedDisaster;
 }

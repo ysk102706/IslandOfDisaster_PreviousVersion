@@ -82,8 +82,8 @@ void ACPP_Player::Move(const FInputActionValue& Value)
 	if (!IsOpenManufacture) {
 		FVector f_dir = GetForwardVector();
 		FVector r_dir = GetForwardVector().Cross(FVector(0, 0, -1));
-		AddMovementInput(f_dir, Value.Get<FVector2D>().X);
-		AddMovementInput(r_dir, Value.Get<FVector2D>().Y);
+		AddMovementInput(f_dir, Value.Get<FVector2D>().X * 3);
+		AddMovementInput(r_dir, Value.Get<FVector2D>().Y * 3);
 	}
 }
 

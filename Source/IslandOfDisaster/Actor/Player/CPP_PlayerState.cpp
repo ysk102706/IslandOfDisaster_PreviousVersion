@@ -7,6 +7,7 @@
 #include "../../UI/PlayerInfoUI.h"
 #include <random>
 #include "../../Manager/DisasterManager.h"
+#include "../Disaster/Disaster.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -31,9 +32,9 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
 
-			UManagers::Get(GetWorld())->Disaster()->Effect1();
-			UManagers::Get(GetWorld())->Disaster()->Effect2();
-			UManagers::Get(GetWorld())->Disaster()->Effect3();
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect1();
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect2();
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
 				DecreaseHunger(5);
@@ -77,7 +78,7 @@ void ACPP_PlayerState::Initialize()
 
 	StartTimer();
 
-	UManagers::Get(GetWorld())->Disaster()->Type = EDisasterType(Random(0, 4));
+	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
 }
 
 int ACPP_PlayerState::Random(int MinInclusive, int MaxInclusive)
