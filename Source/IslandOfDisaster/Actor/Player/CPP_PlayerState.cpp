@@ -6,6 +6,8 @@
 #include "../../Manager/UIManager.h"
 #include "../../UI/PlayerInfoUI.h"
 #include <random>
+#include "../../Manager/DisasterManager.h"
+#include "../Disaster/Disaster.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -29,6 +31,10 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			PhysiologicalPhenomenonUnit++;
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
+
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect1();
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect2();
+			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
 				DecreaseHunger(5);
@@ -62,12 +68,17 @@ void ACPP_PlayerState::Initialize()
 	Days = 1;
 	Hours = 9;
 
+	AdditionalTemperature = 0;
+	AdditionalHumidity = 0;
+
 	ChangeTemperature();
 	ChangeHumidity();
 
 	StateApplyToUI();
 
 	StartTimer();
+
+	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
 }
 
 int ACPP_PlayerState::Random(int MinInclusive, int MaxInclusive)
@@ -154,12 +165,20 @@ void ACPP_PlayerState::DecreaseHumidity(float Value)
 
 void ACPP_PlayerState::ChangeTemperature()
 {
-	int r = Random(0, 5);
-	CurTemperature = 22 + r;
+	CurTemperature = 22 + Random(0, 5) + AdditionalTemperature;
 }
 
 void ACPP_PlayerState::ChangeHumidity()
 {
-	int r = Random(0, 5);
-	CurHumidity = 65 + r;
+	CurHumidity = 65 + Random(0, 7) + AdditionalHumidity;
+}
+
+void ACPP_PlayerState::ChangeAdditionalTemperature()
+{
+	AdditionalTemperature += Random(2, 3);
+}
+
+void ACPP_PlayerState::ChangeAdditionalHumidity()
+{
+	AdditionalHumidity += Random(2, 4);
 }

@@ -17,7 +17,7 @@ class ISLANDOFDISASTER_API ACPP_PlayerState : public APlayerState
 public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
-
+	
 	void Initialize();
 	int Random(int MinInclusive, int MaxInclusive);
 	
@@ -39,7 +39,9 @@ public:
 	void ChangeTemperature();
 	void ChangeHumidity();
 
-	// 플레이어 상태
+	void ChangeAdditionalTemperature();
+	void ChangeAdditionalHumidity();
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float CurHP;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
@@ -55,19 +57,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float MaxThirsty;
 
-	// 주변 환경 상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float MaxTemperature;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
 	float MaxHumidity;
 
-	float CurTemperature;
-	float CurHumidity;
-
-	// 인게임 시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Times)
 	float RealTimeSecondToInGameHour;
+
+	float CurTemperature;
+	float CurHumidity;
 	
 	bool isOnTimer;
 	float Timer;
@@ -77,5 +76,8 @@ public:
 
 	int PhysiologicalPhenomenonUnit;
 	int TemperatureAndHumidityUnit;
+
+	int AdditionalTemperature;
+	int AdditionalHumidity;
 	
 };

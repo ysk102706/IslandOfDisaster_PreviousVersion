@@ -19,6 +19,29 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	UFUNCTION()
+	void Move(const FInputActionValue& Value);
+	UFUNCTION()
+	void Camera(const FInputActionValue& Value);
+	UFUNCTION()
+	void PickItem(const FInputActionValue& Value);
+	UFUNCTION()
+	void DropItem(const FInputActionValue& Value);
+	UFUNCTION()
+	void SelectItem(const FInputActionValue& Value);
+	UFUNCTION()
+	void Manufacture(const FInputActionValue& Value);
+	UFUNCTION()
+	void Construct(const FInputActionValue& Value);
+
+	void ItemCheckRayCast();
+	void ConstructCheckRayCast();
+
+	FVector GetForwardVector();
+
+	TObjectPtr<UTexture2D> GetSelectedItemBG();
+	TObjectPtr<UTexture2D> GetNotSelectedItemBG();
+
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputMappingContext* IMC_Default;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -47,29 +70,6 @@ public:
 	TObjectPtr<UTexture2D> SelectedItemBGTexture;
 	UPROPERTY(EditAnywhere, Category = Texture)
 	TObjectPtr<UTexture2D> NotSelectedItemBGTexture;
-
-	UFUNCTION()
-	void Move(const FInputActionValue& Value);
-	UFUNCTION()
-	void Camera(const FInputActionValue& Value);
-	UFUNCTION()
-	void PickItem(const FInputActionValue& Value);
-	UFUNCTION()
-	void DropItem(const FInputActionValue& Value);
-	UFUNCTION()
-	void SelectItem(const FInputActionValue& Value);
-	UFUNCTION()
-	void Manufacture(const FInputActionValue& Value);
-	UFUNCTION()
-	void Construct(const FInputActionValue& Value);
-
-	void ItemCheckRayCast();
-	void ConstructCheckRayCast();
-
-	FVector GetForwardVector();
-
-	TObjectPtr<UTexture2D> GetSelectedItemBG();
-	TObjectPtr<UTexture2D> GetNotSelectedItemBG();
 
 	TObjectPtr<AInventory> Inventory;
 
