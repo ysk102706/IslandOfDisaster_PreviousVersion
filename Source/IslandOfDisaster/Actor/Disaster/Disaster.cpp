@@ -2,11 +2,11 @@
 
 
 #include "Disaster.h"
+#include <random>
 
 ADisaster::ADisaster()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
 }
 
 void ADisaster::BeginPlay()
@@ -21,15 +21,10 @@ void ADisaster::Tick(float DeltaTime)
 
 }
 
-void ADisaster::Effect1()
+int ADisaster::Random(int MinInclusive, int MaxInclusive)
 {
+	std::random_device random;
+	std::mt19937 engine(random());
+	std::uniform_int_distribution<int> distribution(MinInclusive, MaxInclusive);
+	return distribution(engine);
 }
-
-void ADisaster::Effect2()
-{
-}
-
-void ADisaster::Effect3()
-{
-}
-

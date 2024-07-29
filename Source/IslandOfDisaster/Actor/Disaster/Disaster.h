@@ -16,8 +16,17 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float DeltaTime) override;
 
-	void Effect1();
-	void Effect2();
-	void Effect3();
+	int Random(int MinInclusive, int MaxInclusive);
+
+	virtual void Effect1() {
+		Hours++; 
+		if (!(Hours % 24)) { IsChangeDay = true; }
+	};
+	virtual void Effect2() {};
+	virtual void Effect3() {};
+
+protected:
+	int Hours;
+	bool IsChangeDay;
 
 };

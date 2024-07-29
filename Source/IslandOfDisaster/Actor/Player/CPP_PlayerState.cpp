@@ -53,6 +53,7 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 
 			if (Hours == 24) {
 				Days++;
+				Hours = 0;
 			}
 		}
 
