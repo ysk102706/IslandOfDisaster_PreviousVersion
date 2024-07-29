@@ -15,12 +15,22 @@
 #include "../../UI/ManufactureUI.h"
 #include "CPP_PlayerController.h"
 #include "../../Manager/DataLoadManager.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Components/SceneCaptureComponent2D.h"
 
 ACPP_Player::ACPP_Player()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	IsOpenManufacture = false;
+
+	SpringArm = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
+	SpringArm->SetupAttachment(RootComponent);
+	SpringArm->SetWorldRotation(FRotator::MakeFromEuler(FVector(0, -90, 0)));
+
+	CaptureComp = CreateDefaultSubobject<USceneCaptureComponent2D>("CaptureComp");
+	CaptureComp->SetupAttachment(SpringArm);
+	CaptureComp->ProjectionType = ECameraProjectionMode::Orthographic;
 }
 
 void ACPP_Player::BeginPlay()

@@ -71,6 +71,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = Texture)
 	TObjectPtr<UTexture2D> NotSelectedItemBGTexture;
 
+	UPROPERTY(EditAnywhere, Category=Minimap)
+	TObjectPtr<class USpringArmComponent> SpringArm;
+	UPROPERTY(EditAnywhere, Category = Minimap)
+	TObjectPtr<class USceneCaptureComponent2D> CaptureComp;
+
 	TObjectPtr<AInventory> Inventory;
 
 private:
