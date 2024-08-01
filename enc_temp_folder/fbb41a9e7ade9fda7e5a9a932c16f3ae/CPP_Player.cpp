@@ -183,7 +183,8 @@ void ACPP_Player::ConstructCheckRayCast()
 
 void ACPP_Player::Shake()
 {
-	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) PlayerController->ClientStartCameraShake(CameraShake);
+	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) 
+		PlayerController->ClientStartCameraShake(CameraShake);
 }
 
 FVector ACPP_Player::GetForwardVector()

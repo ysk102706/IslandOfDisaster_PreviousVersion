@@ -33,6 +33,8 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
 
+			UManagers::Get(GetWorld())->Player()->Shake();
+
 			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect1();
 			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect2();
 			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect3();

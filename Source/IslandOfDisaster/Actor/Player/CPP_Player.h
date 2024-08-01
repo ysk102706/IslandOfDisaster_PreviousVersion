@@ -37,6 +37,8 @@ public:
 	void ItemCheckRayCast();
 	void ConstructCheckRayCast();
 
+	void Shake();
+
 	FVector GetForwardVector();
 
 	TObjectPtr<UTexture2D> GetSelectedItemBG();
@@ -52,29 +54,32 @@ public:
 	class UInputAction* IA_Pick;
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_Drop;
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_SelectItem;
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_Manufacture;
-	UPROPERTY(EditAnywhere, Category = Input)
+	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputAction* IA_Construct;
 
 	UPROPERTY(EditAnywhere, Category=Ray)
 	float ItemCheckRayLength;
-	UPROPERTY(EditAnywhere, Category = Ray)
+	UPROPERTY(EditAnywhere, Category=Ray)
 	float ConstructCheckRayLength;
 
 	UPROPERTY(EditAnywhere, Category=Texture)
 	TObjectPtr<UTexture2D> NoneItemTexture;
-	UPROPERTY(EditAnywhere, Category = Texture)
+	UPROPERTY(EditAnywhere, Category=Texture)
 	TObjectPtr<UTexture2D> SelectedItemBGTexture;
-	UPROPERTY(EditAnywhere, Category = Texture)
+	UPROPERTY(EditAnywhere, Category=Texture)
 	TObjectPtr<UTexture2D> NotSelectedItemBGTexture;
 
 	UPROPERTY(EditAnywhere, Category=Minimap)
 	TObjectPtr<class USpringArmComponent> SpringArm;
-	UPROPERTY(EditAnywhere, Category = Minimap)
+	UPROPERTY(EditAnywhere, Category=Minimap)
 	TObjectPtr<class USceneCaptureComponent2D> CaptureComp;
+
+	UPROPERTY(EditAnywhere, Category=Shake)
+	TSubclassOf<class ULegacyCameraShake> CameraShake;
 
 	TObjectPtr<AInventory> Inventory;
 
