@@ -9,6 +9,8 @@
 #include "../../Manager/DisasterManager.h"
 #include "../Disaster/Disaster.h"
 #include "CPP_Player.h"
+#include "../Item/Spawner.h"
+#include "EngineUtils.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -55,6 +57,10 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			if (Hours == 24) {
 				Days++;
 				Hours = 0;
+
+				for (auto Spawner : Spawners) {
+					if (Random(0, 1)) Spawner->Spawn();
+				}
 			}
 		}
 
@@ -81,6 +87,12 @@ void ACPP_PlayerState::Initialize()
 	StartTimer();
 
 	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
+
+	UWorld* World = GetWorld();
+	for (TActorIterator<ASpawner> It(World); It; ++It) {
+		Spawners.Add(*It);
+		if (Random(0, 1)) It->Spawn();
+	}
 }
 
 int ACPP_PlayerState::Random(int MinInclusive, int MaxInclusive)

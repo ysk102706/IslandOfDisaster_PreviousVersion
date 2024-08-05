@@ -79,5 +79,7 @@ public:
 
 	int AdditionalTemperature;
 	int AdditionalHumidity;
+
+	TArray<TObjectPtr<class ASpawner>> Spawners;
 	
 };
