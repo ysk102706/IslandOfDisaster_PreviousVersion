@@ -18,7 +18,18 @@ void AEpidemic::Effect2()
 
 void AEpidemic::Effect3()
 {
-	if (!(Hours % 48)) 1;
+	if (!(Hours % 48)) {
+		FVector SpawnPos = RottenFishSpawnPos[Random(0, RottenFishSpawnPos.Num() - 1)];
+		int SpawnCount = Random(3, 7);
+
+		for (int i = 0; i < SpawnCount; i++) {
+			FVector Position = RandomCircle(SpawnPos, 200);
+			FRotator Rotation = FRotator(0, Random(0, 360), 0);
+
+			GetWorld()->SpawnActor(RottenFish, &Position, &Rotation);
+			GetWorld()->SpawnActor(RottenFish, &Position, &Rotation);
+		} 
+	}
 
 	IsChangeDay = false;
 }

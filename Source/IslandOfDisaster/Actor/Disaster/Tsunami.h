@@ -19,4 +19,11 @@ public:
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
+	UPROPERTY(EditANywhere, Category = Spawn)
+	TArray<FVector> FishSpawnPos;
+	UPROPERTY(EditANywhere, Category = Spawn)
+	TSubclassOf<AActor> Fish;
+	UPROPERTY(EditANywhere, Category = Spawn)
+	float SpawnRange;
+
 };

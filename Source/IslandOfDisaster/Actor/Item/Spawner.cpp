@@ -12,6 +12,7 @@ void ASpawner::Spawn()
 		SpawnedItem = UManagers::Get(GetWorld())->DataLoad()->SpawnItemActor(GetWorld(), Id);
 		SpawnedItem->SetActorLocation(GetActorLocation());
 		SpawnedItem->SetWorldLocation(GetActorLocation());
+		SpawnedItem->SetPhysics(false);
 		SpawnedItem->Spawner = this;
 		IsSpawned = true;
 	}

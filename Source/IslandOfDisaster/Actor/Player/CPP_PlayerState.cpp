@@ -86,7 +86,8 @@ void ACPP_PlayerState::Initialize()
 
 	StartTimer();
 
-	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
+	//UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
+	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(2));
 
 	UWorld* World = GetWorld();
 	for (TActorIterator<ASpawner> It(World); It; ++It) {

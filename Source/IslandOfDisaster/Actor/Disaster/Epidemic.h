@@ -6,8 +6,6 @@
 #include "Disaster.h"
 #include "Epidemic.generated.h"
 
-class UMaterialInstanceDynamic;
-
 /**
  * 
  */
@@ -21,6 +19,11 @@ public:
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
-	TObjectPtr<UMaterialInstanceDynamic> DynamicMaterial;
+	UPROPERTY(EditANywhere, Category=Spawn)
+	TArray<FVector> RottenFishSpawnPos;
+	UPROPERTY(EditANywhere, Category = Spawn)
+	TSubclassOf<AActor> RottenFish;
+	UPROPERTY(EditANywhere, Category = Spawn)
+	float SpawnRange;
 
 };

@@ -17,6 +17,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	int Random(int MinInclusive, int MaxInclusive);
+	float Random(float MinInclusive, float MaxExclusive);
+	FVector RandomCircle(FVector Center, float MaxRange); 
 
 	virtual void Effect1() {
 		Hours++; 
