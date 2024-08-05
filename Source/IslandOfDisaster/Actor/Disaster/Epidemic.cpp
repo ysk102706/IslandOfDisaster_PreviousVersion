@@ -12,7 +12,8 @@ void AEpidemic::Effect1()
 
 void AEpidemic::Effect2()
 {
-	if (IsChangeDay) 1;
+	if (IsChangeDay) {
+	}
 }
 
 void AEpidemic::Effect3()

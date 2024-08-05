@@ -164,7 +164,11 @@ void ACPP_Player::ItemCheckRayCast()
 
 void ACPP_Player::ConstructCheckRayCast()
 {
-	FHitResult Hit;
+	FHitResult WaterHit;
+	FHitResult ObjectHit;
+
+	bool Water;
+	bool Object;
 
 	FVector Forward = GetForwardVector();
 	FVector Start = PlayerCamera->GetComponentLocation();
@@ -172,12 +176,18 @@ void ACPP_Player::ConstructCheckRayCast()
 
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
-	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
-		auto Actor = Hit.GetActor();
-		auto ConstructPoint = Cast<AItem>(Actor);
-		if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
-		else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
+	Water = GetWorld()->LineTraceSingleByChannel(WaterHit, Start, End, ECC_GameTraceChannel3, CQP);
+	Object = GetWorld()->LineTraceSingleByChannel(ObjectHit, Start, End, ECC_Visibility, CQP);
+
+	if (Water && Object) {
+		float Water_Z = WaterHit.Location.Z;
+		float Object_Z = ObjectHit.Location.Z;
+
+		if (Water_Z > Object_Z) ConstructCheckRayCastAction(WaterHit);
+		else ConstructCheckRayCastAction(ObjectHit);
 	}
+	else if (Water) ConstructCheckRayCastAction(WaterHit);
+	else if (Object) ConstructCheckRayCastAction(ObjectHit);
 	else IsConstruct = false;
 }
 
@@ -199,4 +209,12 @@ TObjectPtr<UTexture2D> ACPP_Player::GetSelectedItemBG()
 TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
 {
 	return NotSelectedItemBGTexture;
+}
+
+void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)
+{
+	auto Actor = Hit.GetActor();
+	auto ConstructPoint = Cast<AItem>(Actor);
+	if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
+	else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
 }

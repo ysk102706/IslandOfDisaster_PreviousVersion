@@ -84,6 +84,8 @@ public:
 	TObjectPtr<AInventory> Inventory;
 
 private:
+	void ConstructCheckRayCastAction(FHitResult& Hit);
+
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 	TObjectPtr<AItem> FocusedItem;
 

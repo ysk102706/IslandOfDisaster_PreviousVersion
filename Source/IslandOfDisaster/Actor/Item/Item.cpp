@@ -89,6 +89,7 @@ void AItem::Droped()
 
 void AItem::Construct(FVector Pos)
 {
+	SetPhysics(false);
 	SetActorLocation(Pos);
 	SetWorldLocation(Pos);
 
