@@ -27,9 +27,6 @@ public:
 	virtual void Effect2() {};
 	virtual void Effect3() {};
 
-	int AnimalEpidemicPercent;
-	int WindSoundVolume;
-
 protected:
 	int Hours;
 	bool IsChangeDay;

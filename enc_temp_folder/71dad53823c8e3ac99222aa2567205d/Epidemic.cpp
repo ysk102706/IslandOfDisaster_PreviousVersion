@@ -19,7 +19,7 @@ void AEpidemic::Effect1()
 {
 	Super::Effect1();
 
-	if (IsChangeDay) AnimalEpidemicPercent = Random(2, 6);
+	if (IsChangeDay) 1;
 }
 
 void AEpidemic::Effect2()

@@ -19,7 +19,7 @@ void ATyphoon::Effect2()
 
 void ATyphoon::Effect3()
 {
-	if (IsChangeDay) WindSoundVolume++;
+	if (IsChangeDay) 1;
 
 	IsChangeDay = false;
 }
