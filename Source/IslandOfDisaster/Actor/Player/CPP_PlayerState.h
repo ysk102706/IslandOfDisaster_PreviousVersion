@@ -81,5 +81,7 @@ public:
 	int AdditionalHumidity;
 
 	TArray<TObjectPtr<class ASpawner>> Spawners;
+
+	TObjectPtr<class ADisaster> Disaster;
 	
 };

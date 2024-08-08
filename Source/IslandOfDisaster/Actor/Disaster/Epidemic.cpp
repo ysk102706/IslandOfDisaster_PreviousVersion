@@ -2,6 +2,18 @@
 
 
 #include "Epidemic.h"
+#include "WaterBodyLakeActor.h"
+#include "EngineUtils.h"
+#include "Materials/MaterialInstance.h"
+
+void AEpidemic::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TActorIterator<AWaterBodyLake> It(GetWorld());
+	WaterBodyLake = *It;
+	WaterBodyLake->SetWaterMaterial(WaterMaterials[Hours / 24]);
+}
 
 void AEpidemic::Effect1()
 {
@@ -13,6 +25,9 @@ void AEpidemic::Effect1()
 void AEpidemic::Effect2()
 {
 	if (IsChangeDay) {
+		WaterBodyLake->GetWaterBodyComponent()->SetVisibility(false);
+		WaterBodyLake->SetWaterMaterial(WaterMaterials[Hours / 24]);
+		WaterBodyLake->GetWaterBodyComponent()->SetVisibility(true);
 	}
 }
 

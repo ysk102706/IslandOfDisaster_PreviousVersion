@@ -35,9 +35,9 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
 
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect1();
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect2();
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect3();
+			Disaster->Effect1();
+			Disaster->Effect2();
+			Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
 				DecreaseHunger(5);
@@ -88,6 +88,8 @@ void ACPP_PlayerState::Initialize()
 
 	//UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
 	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(2));
+	
+	Disaster = UManagers::Get(GetWorld())->Disaster()->Disaster;
 
 	UWorld* World = GetWorld();
 	for (TActorIterator<ASpawner> It(World); It; ++It) {

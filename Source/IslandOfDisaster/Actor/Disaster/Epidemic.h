@@ -6,6 +6,8 @@
 #include "Disaster.h"
 #include "Epidemic.generated.h"
 
+class AWaterBodyLake;
+
 /**
  * 
  */
@@ -15,15 +17,23 @@ class ISLANDOFDISASTER_API AEpidemic : public ADisaster
 	GENERATED_BODY()
 	
 public:
+	virtual void BeginPlay() override;
+
 	virtual void Effect1() override;
 	virtual void Effect2() override;
 	virtual void Effect3() override;
 
-	UPROPERTY(EditANywhere, Category=Spawn)
+	UPROPERTY(EditAnywhere, Category=Spawn)
 	TArray<FVector> RottenFishSpawnPos;
-	UPROPERTY(EditANywhere, Category = Spawn)
+	UPROPERTY(EditAnywhere, Category = Spawn)
 	TSubclassOf<AActor> RottenFish;
-	UPROPERTY(EditANywhere, Category = Spawn)
+	UPROPERTY(EditAnywhere, Category = Spawn)
 	float SpawnRange;
+
+	UPROPERTY(EditAnywhere, Category=Material)
+	TArray<TObjectPtr<UMaterialInterface>> WaterMaterials;
+
+private:
+	TObjectPtr<AWaterBodyLake> WaterBodyLake;
 
 };
