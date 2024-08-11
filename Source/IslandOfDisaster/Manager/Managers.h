@@ -10,6 +10,7 @@ class UUIManager;
 class UDataLoadManager;
 class UDisasterManager;
 class ACPP_Player;
+class AWeather;
 
 /**
  * 
@@ -21,14 +22,16 @@ class ISLANDOFDISASTER_API UManagers : public UGameInstance
 	
 public:
 	UManagers();
-	void InitManager();
+	void InitManager(const UWorld* World);
 	
 	UUIManager* UI();
 	UDataLoadManager* DataLoad();
 	UDisasterManager* Disaster();
 
 	void SetPlayer(ACPP_Player* Player);
-	ACPP_Player* Player();
+	TObjectPtr<ACPP_Player> Player();
+	
+	TObjectPtr<AWeather> Weather();
 
 	static UManagers* Get(const UWorld* World);
 
@@ -44,5 +47,7 @@ private:
 	TObjectPtr<UDataLoadManager> DataLoadManagerObject;
 	TObjectPtr<UDisasterManager> DisasterManagerObject;
 	TObjectPtr<ACPP_Player> PlayerObject;
+
+	TObjectPtr<AWeather> WeatherObject;
 
 };

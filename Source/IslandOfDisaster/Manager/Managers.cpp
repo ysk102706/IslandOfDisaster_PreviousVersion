@@ -6,6 +6,8 @@
 #include "DataLoadManager.h"
 #include "DisasterManager.h"
 #include "Kismet/GameplayStatics.h"
+#include "EngineUtils.h"
+#include "../Actor/Weather.h"
 
 #define InifManager(Type) \
 	if (Type##ManagerClass->StaticClass()) Type##ManagerObject = NewObject<U##Type##Manager>(this, Type##ManagerClass);\
@@ -42,13 +44,20 @@ void UManagers::SetPlayer(ACPP_Player* Player)
 	PlayerObject = Player;
 }
 
-ACPP_Player* UManagers::Player()
+TObjectPtr<ACPP_Player> UManagers::Player()
 {
 	return PlayerObject;
 }
 
-void UManagers::InitManager() {
+TObjectPtr<AWeather> UManagers::Weather()
+{
+	return WeatherObject;
+}
+
+void UManagers::InitManager(const UWorld* World) {
 	InifManager(UI);
 	InifManager(DataLoad);
 	InifManager(Disaster);
+
+	WeatherObject = Cast<AWeather>(UGameplayStatics::GetActorOfClass(GetWorld(), AWeather::StaticClass()));
 }

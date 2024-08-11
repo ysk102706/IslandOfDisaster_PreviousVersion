@@ -59,7 +59,6 @@ void ACPP_Player::BeginPlay()
 	}
 
 	NSC_Rain = FindComponentByClass<UNiagaraComponent>(); 
-	SetActiveRain(false);
 
 	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
 }

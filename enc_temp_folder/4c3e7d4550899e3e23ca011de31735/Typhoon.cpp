@@ -11,10 +11,8 @@ void ATyphoon::Effect1()
 {
 	Super::Effect1();
 
-	if (!(Hours % 24)) {
-		if (Hours / 24 % 2) UManagers::Get(GetWorld())->Weather()->Rain(); 
-		else UManagers::Get(GetWorld())->Weather()->Clear();
-	}
+	if (!(Hours % 5)) UManagers::Get(GetWorld())->Weather()->Rain();
+	else UManagers::Get(GetWorld())->Weather()->Clear();
 }
 
 void ATyphoon::Effect2()

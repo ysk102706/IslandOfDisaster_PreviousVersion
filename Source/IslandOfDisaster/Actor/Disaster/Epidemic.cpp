@@ -10,8 +10,8 @@ void AEpidemic::BeginPlay()
 {
 	Super::BeginPlay();
 
-	TActorIterator<AWaterBodyLake> It(GetWorld());
-	WaterBodyLake = *It;
+	
+	WaterBodyLake = *TActorIterator<AWaterBodyLake> (GetWorld());
 	WaterBodyLake->SetWaterMaterial(WaterMaterials[Hours / 24]);
 }
 

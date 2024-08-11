@@ -44,6 +44,8 @@ public:
 	TObjectPtr<UTexture2D> GetSelectedItemBG();
 	TObjectPtr<UTexture2D> GetNotSelectedItemBG();
 
+	void SetActiveRain(bool Value);
+
 	UPROPERTY(EditAnywhere, Category=Input)
 	class UInputMappingContext* IMC_Default;
 	UPROPERTY(EditAnywhere, Category=Input)
@@ -88,6 +90,8 @@ private:
 
 	TObjectPtr<class UCameraComponent> PlayerCamera;
 	TObjectPtr<AItem> FocusedItem;
+
+	TObjectPtr<class UNiagaraComponent> NSC_Rain;
 
 	bool IsOpenManufacture;
 	float InputManufactureDelayTimer;
