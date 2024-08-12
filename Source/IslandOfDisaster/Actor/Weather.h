@@ -23,6 +23,8 @@ public:
 	UPROPERTY(EditANywhere, Category=Material)
 	TObjectPtr<UMaterialInterface> M_Cloud;
 
+	bool IsRain;
+
 private: 
 	void SetRayleighScattering(FLinearColor Color);
 	void SetExposureCompensation(float Value);
@@ -49,6 +51,5 @@ private:
 	bool IsLerp;
 	float LerpRatio;
 
-	bool IsRain;
 	bool IsRainClear;
 };

@@ -11,6 +11,7 @@
 #include "CPP_Player.h"
 #include "../Item/Spawner.h"
 #include "EngineUtils.h"
+#include "../TimeOfDay.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -29,6 +30,7 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 
 	if (isOnTimer) {
 		Timer += DeltaTime;
+		UManagers::Get(GetWorld())->TimeOfDay()->TimeToSunRotation(Hours, Timer / RealTimeSecondToInGameHour * 60);
 		if (Timer >= RealTimeSecondToInGameHour) {
 			Hours++;
 			PhysiologicalPhenomenonUnit++;
@@ -121,7 +123,6 @@ void ACPP_PlayerState::StateApplyToUI()
 	PlayerInfoWidget->SetHumidity(MaxHumidity, CurHumidity);
 	PlayerInfoWidget->SetDays(Days);
 	PlayerInfoWidget->SetHours(Hours, Timer / RealTimeSecondToInGameHour * 60);
-
 }
 
 void ACPP_PlayerState::IncreaseHP(float Value)

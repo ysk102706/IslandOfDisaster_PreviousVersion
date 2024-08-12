@@ -18,7 +18,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "Camera/CameraShake.h"
-#include "NiagaraComponent.h"
+#include "../../Manager/FXManager.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -58,9 +58,12 @@ void ACPP_Player::BeginPlay()
 		}
 	}
 
-	NSC_Rain = FindComponentByClass<UNiagaraComponent>(); 
-
 	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
+
+	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::Star, FVector(0, 0, 0));
+	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::Wind, FVector(0, 0, 0));
+	UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Star, false);
+	UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Wind, true);
 }
 
 void ACPP_Player::Tick(float DeltaTime)
@@ -73,6 +76,8 @@ void ACPP_Player::Tick(float DeltaTime)
 	ItemCheckRayCast();
 
 	InputManufactureDelayTimer += DeltaTime;
+
+	UManagers::Get(GetWorld())->FX()->Tick(GetWorld());
 }
 
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -211,11 +216,6 @@ TObjectPtr<UTexture2D> ACPP_Player::GetSelectedItemBG()
 TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
 {
 	return NotSelectedItemBGTexture;
-}
-
-void ACPP_Player::SetActiveRain(bool Value)
-{
-	NSC_Rain->SetActive(Value);
 }
 
 void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)

@@ -19,7 +19,7 @@ void AWeather::BeginPlay()
 {
 	Super::BeginPlay();
 	  
-	SkyAtmosphere = *TActorIterator<ASkyAtmosphere>(GetWorld());	
+	SkyAtmosphere = *TActorIterator<ASkyAtmosphere>(GetWorld());
 	PostProcessVolume = *TActorIterator<APostProcessVolume> (GetWorld());
 	VolumetricCloud = *TActorIterator<AVolumetricCloud>(GetWorld());
 
@@ -45,7 +45,7 @@ void AWeather::Tick(float DeltaTime)
 		SetDensityOffset(Lerp(CurrentDensityOffset, TargetDensityOffset, LerpRatio));
 
 		if (IsRainClear && LerpRatio >= 0.6f) {
-			UManagers::Get(GetWorld())->Player()->SetActiveRain(false);
+			//UManagers::Get(GetWorld())->Player()->SetActiveRain(false);
 			
 			IsRainClear = false;
 			IsRain = false;
@@ -58,7 +58,7 @@ void AWeather::Tick(float DeltaTime)
 
 			IsLerp = false;
 
-			if (IsRain) UManagers::Get(GetWorld())->Player()->SetActiveRain(true);
+			//if (IsRain) UManagers::Get(GetWorld())->Player()->SetActiveRain(true);
 		}
 	}
 }
