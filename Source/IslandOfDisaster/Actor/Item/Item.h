@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+class ASpawner;
+
 UCLASS()
 class ISLANDOFDISASTER_API AItem : public AActor
 {
@@ -44,6 +46,8 @@ public:
 	FString ConstructAvailablePlaceName;
 	
 	TObjectPtr<UTexture2D> Texture;
+	
+	TObjectPtr<ASpawner> Spawner;
 
 	FString Name;
 	FString Description;

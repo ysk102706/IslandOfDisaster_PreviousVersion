@@ -5,6 +5,7 @@
 #include "../../Manager/Managers.h"
 #include "../../Manager/DataLoadManager.h"
 #include "../Player/CPP_Player.h"
+#include "Spawner.h"
 
 AItem::AItem()
 {
@@ -71,6 +72,10 @@ bool AItem::Picked()
 		SetActorLocation(FVector(0, 0, -100));
 		Mesh->SetWorldLocation(FVector(0, 0, -100));
 		SetPhysics(false);
+
+		Spawner->IsSpawned = false;
+		Spawner->SpawnedItem = nullptr;
+
 		return true;
 	}
 	return false;
@@ -89,6 +94,7 @@ void AItem::Droped()
 
 void AItem::Construct(FVector Pos)
 {
+	SetPhysics(false);
 	SetActorLocation(Pos);
 	SetWorldLocation(Pos);
 

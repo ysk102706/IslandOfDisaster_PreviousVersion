@@ -17,6 +17,8 @@
 #include "../../Manager/DataLoadManager.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Components/SceneCaptureComponent2D.h"
+#include "Camera/CameraShake.h"
+#include "../../Manager/FXManager.h"
 
 ACPP_Player::ACPP_Player()
 {
@@ -58,6 +60,8 @@ void ACPP_Player::BeginPlay()
 
 	Cast<UManagers>(GetGameInstance())->UI()->ShowWidget(EWidgetType::PlayerInfo);
 
+	UManagers::Get(GetWorld())->FX()->SpawnFX(GetWorld(), EFXType::Star, FVector(0, 0, 0));
+	UManagers::Get(GetWorld())->FX()->SetActiveFX(EFXType::Star, false);
 }
 
 void ACPP_Player::Tick(float DeltaTime)
@@ -70,6 +74,8 @@ void ACPP_Player::Tick(float DeltaTime)
 	ItemCheckRayCast();
 
 	InputManufactureDelayTimer += DeltaTime;
+
+	UManagers::Get(GetWorld())->FX()->Tick(GetWorld());
 }
 
 void ACPP_Player::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -163,7 +169,11 @@ void ACPP_Player::ItemCheckRayCast()
 
 void ACPP_Player::ConstructCheckRayCast()
 {
-	FHitResult Hit;
+	FHitResult WaterHit;
+	FHitResult ObjectHit;
+
+	bool Water;
+	bool Object;
 
 	FVector Forward = GetForwardVector();
 	FVector Start = PlayerCamera->GetComponentLocation();
@@ -171,13 +181,24 @@ void ACPP_Player::ConstructCheckRayCast()
 
 	//DrawDebugLine(GetWorld(), Start, End, FColor::Green, false, 0.5f, 0, 1);
 
-	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CQP)) {
-		auto Actor = Hit.GetActor();
-		auto ConstructPoint = Cast<AItem>(Actor);
-		if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
-		else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
+	Water = GetWorld()->LineTraceSingleByChannel(WaterHit, Start, End, ECC_GameTraceChannel3, CQP);
+	Object = GetWorld()->LineTraceSingleByChannel(ObjectHit, Start, End, ECC_Visibility, CQP);
+
+	if (Water && Object) {
+		float Water_Z = WaterHit.Location.Z;
+		float Object_Z = ObjectHit.Location.Z;
+
+		if (Water_Z > Object_Z) ConstructCheckRayCastAction(WaterHit);
+		else ConstructCheckRayCastAction(ObjectHit);
 	}
+	else if (Water) ConstructCheckRayCastAction(WaterHit);
+	else if (Object) ConstructCheckRayCastAction(ObjectHit);
 	else IsConstruct = false;
+}
+
+void ACPP_Player::Shake()
+{
+	if (auto PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0)) PlayerController->ClientStartCameraShake(CameraShake);
 }
 
 FVector ACPP_Player::GetForwardVector()
@@ -193,4 +214,12 @@ TObjectPtr<UTexture2D> ACPP_Player::GetSelectedItemBG()
 TObjectPtr<UTexture2D> ACPP_Player::GetNotSelectedItemBG()
 {
 	return NotSelectedItemBGTexture;
+}
+
+void ACPP_Player::ConstructCheckRayCastAction(FHitResult& Hit)
+{
+	auto Actor = Hit.GetActor();
+	auto ConstructPoint = Cast<AItem>(Actor);
+	if (ConstructPoint && ConstructPoint->IsConstructPoint) CQP.AddIgnoredActor(ConstructPoint);
+	else if (Actor) IsConstruct = Inventory->ShowConstructPoint(Actor->GetActorLabel(), Hit.Location);
 }

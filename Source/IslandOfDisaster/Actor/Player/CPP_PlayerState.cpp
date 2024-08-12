@@ -8,6 +8,10 @@
 #include <random>
 #include "../../Manager/DisasterManager.h"
 #include "../Disaster/Disaster.h"
+#include "CPP_Player.h"
+#include "../Item/Spawner.h"
+#include "EngineUtils.h"
+#include "../TimeOfDay.h"
 
 #define Max(a, b) a > b ? a : b
 #define Min(a, b) a < b ? a : b
@@ -26,15 +30,16 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 
 	if (isOnTimer) {
 		Timer += DeltaTime;
+		UManagers::Get(GetWorld())->TimeOfDay()->TimeToSunRotation(Hours, Timer / RealTimeSecondToInGameHour * 60);
 		if (Timer >= RealTimeSecondToInGameHour) {
 			Hours++;
 			PhysiologicalPhenomenonUnit++;
 			TemperatureAndHumidityUnit++;
 			Timer = 0;
 
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect1();
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect2();
-			UManagers::Get(GetWorld())->Disaster()->Disaster->Effect3();
+			Disaster->Effect1();
+			Disaster->Effect2();
+			Disaster->Effect3();
 
 			if (PhysiologicalPhenomenonUnit == 2) {
 				DecreaseHunger(5);
@@ -53,6 +58,11 @@ void ACPP_PlayerState::Tick(float DeltaTime)
 
 			if (Hours == 24) {
 				Days++;
+				Hours = 0;
+
+				for (auto Spawner : Spawners) {
+					if (Random(0, 1)) Spawner->Spawn();
+				}
 			}
 		}
 
@@ -78,7 +88,16 @@ void ACPP_PlayerState::Initialize()
 
 	StartTimer();
 
-	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
+	//UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(Random(0, 4)));
+	UManagers::Get(GetWorld())->Disaster()->SetDisaster(EDisasterType(4));
+	
+	Disaster = UManagers::Get(GetWorld())->Disaster()->Disaster;
+
+	UWorld* World = GetWorld();
+	for (TActorIterator<ASpawner> It(World); It; ++It) {
+		Spawners.Add(*It);
+		if (Random(0, 1)) It->Spawn();
+	}
 }
 
 int ACPP_PlayerState::Random(int MinInclusive, int MaxInclusive)
@@ -104,7 +123,6 @@ void ACPP_PlayerState::StateApplyToUI()
 	PlayerInfoWidget->SetHumidity(MaxHumidity, CurHumidity);
 	PlayerInfoWidget->SetDays(Days);
 	PlayerInfoWidget->SetHours(Hours, Timer / RealTimeSecondToInGameHour * 60);
-
 }
 
 void ACPP_PlayerState::IncreaseHP(float Value)
